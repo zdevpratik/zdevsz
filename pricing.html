@@ -70,13 +70,32 @@
       transition: border-color .3s ease;
     }
     .nav-cta:hover { border-color: var(--bone); }
+    .mobile-menu-toggle { display: none; }
+    .mobile-cta { display: none !important; }
 
     @media (max-width: 900px) {
       body { touch-action: pan-y; overflow-x: clip; }
-      nav { padding: 12px 20px; }
-      .nav-links { display: none; }
-      .nav-cta { display: none; }
-      .nav-logo-img { height: 50px; }
+      nav { padding: 12px 20px; flex-wrap: wrap; }
+      .nav-logo { flex: 1; }
+      .nav-cta { display: inline-flex; padding: 7px 14px; margin-right: 16px; }
+      .nav-logo-img { height: 40px; }
+      .mobile-menu-toggle {
+        display: flex; flex-direction: column; gap: 4px;
+        background: none; border: none; cursor: pointer; padding: 4px;
+        position: relative; z-index: 200;
+      }
+      .mobile-menu-toggle .bar { width: 20px; height: 2px; background: var(--bone); transition: 0.3s; }
+      .mobile-menu-toggle.active .bar:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+      .mobile-menu-toggle.active .bar:nth-child(2) { opacity: 0; }
+      .mobile-menu-toggle.active .bar:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+      .nav-links {
+        display: none; flex-direction: column; width: 100%; margin-top: 16px; gap: 12px;
+        background: var(--void); padding: 16px; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
+      }
+      .nav-links.active { display: flex; }
+      .nav-links a { font-size: 14px; }
+      .desktop-cta { display: none !important; }
+      .mobile-cta { display: inline-flex !important; justify-content: center; width: 100%; margin-top: 12px; padding: 12px; }
     }
 
     /* ── Page content ── */
@@ -334,8 +353,8 @@
       .pricing-grid { grid-template-columns: 1fr; padding: 0 24px; }
       .pricing-hero { padding: 60px 24px 80px; }
       .pricing-hero h1 { font-size: clamp(36px, 9vw, 72px); }
-      .site-footer { padding: 24px 28px; flex-direction: column; align-items: flex-start; gap: 16px; }
-      .footer-nav  { position: static; transform: none; flex-wrap: wrap; gap: 16px; }
+      .site-footer { padding: 24px 20px; flex-direction: row; align-items: center; justify-content: space-between; gap: 16px; }
+      .footer-nav  { position: static; transform: none; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
     }
   </style>
 </head>
@@ -348,14 +367,18 @@
     <a href="index.html" class="nav-logo">
       <img src="logo with bg.png" alt="zdevs" class="nav-logo-img">
     </a>
-    <ul class="nav-links">
+    <button class="mobile-menu-toggle" id="mobileMenuToggle">
+      <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+    </button>
+    <ul class="nav-links" id="navLinks">
       <li><a href="index.html">HOME</a></li>
       <li><a href="index.html#manifesto-done">WHO ARE WE</a></li>
       <li><a href="index.html#cards-done">SERVICES</a></li>
       <li><a href="pricing.html" class="active">PRICING</a></li>
       <li><a href="contact.html">CONTACT</a></li>
+      <li><a href="contact.html" class="nav-cta mobile-cta"><span class="cta-label">BOOK AN INQUIRY</span><span class="cta-arrow">↗</span></a></li>
     </ul>
-    <a href="contact.html" class="nav-cta">
+    <a href="contact.html" class="nav-cta desktop-cta">
       <span>BOOK AN INQUIRY</span>
       <span>↗</span>
     </a>
@@ -468,6 +491,21 @@
       el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
       el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
     });
+
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const navLinks = document.getElementById('navLinks');
+    if (mobileMenuToggle && navLinks) {
+      mobileMenuToggle.addEventListener('click', () => {
+        mobileMenuToggle.classList.toggle('active');
+        navLinks.classList.toggle('active');
+      });
+      navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenuToggle.classList.remove('active');
+          navLinks.classList.remove('active');
+        });
+      });
+    }
   </script>
 </body>
 </html>
