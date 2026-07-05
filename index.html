@@ -422,28 +422,6 @@
         line-height: 1.65;
       }
 
-      /* ── Service cards ── */
-      .cards-section { min-height: auto !important; padding: 60px 20px !important; }
-      .cards-sticky { position: relative !important; height: auto !important; overflow: visible !important; }
-      .cards-stage { position: relative !important; inset: auto !important; display: flex !important; flex-direction: column !important; gap: 16px !important; }
-      .service-card  {
-        position: relative !important; top: auto !important; left: auto !important;
-        transform: none !important; width: 100% !important; height: auto !important;
-        opacity: 1 !important; z-index: 1 !important;
-        padding: 16px !important; box-shadow: none !important;
-        max-height: 120px !important; overflow: hidden !important; transition: max-height 0.4s ease, background 0.3s ease !important;
-      }
-      .service-card.expanded { max-height: 1200px !important; background: #141517 !important; }
-      .card-name { font-size: 16px !important; display: inline-flex !important; flex-wrap: wrap !important; gap: 4px !important; margin: 0 !important; }
-      .card-name br { display: none !important; }
-      .card-body { flex-direction: row !important; align-items: center !important; justify-content: flex-start !important; gap: 16px !important; opacity: 1 !important; display: flex !important; margin-bottom: 0 !important; }
-      .card-icon { font-size: 24px !important; margin-bottom: 0 !important; flex-shrink: 0 !important; }
-      .card-footer { margin-top: 16px !important; border-top: 1px solid rgba(255,255,255,0.06) !important; padding-top: 16px !important; opacity: 0 !important; transition: opacity 0.3s !important; }
-      .service-card.expanded .card-footer { opacity: 1 !important; }
-      .service-card.expanded .card-body { flex-direction: column !important; align-items: flex-start !important; }
-      .cards-cta-wrap { position: relative !important; bottom: auto !important; left: auto !important; transform: none !important; margin-top: 32px !important; opacity: 1 !important; }
-      .cards-backdrop { display: none !important; }
-
       /* ── Closing ── */
       .closing-section  { padding: 90px 24px 70px; }
       .closing-headline {
@@ -587,167 +565,6 @@
       display: inline-block;
       white-space: nowrap;
       position: relative;
-    }
-
-    /* ────────────────────────────────────────
-       SERVICES CARDS — scroll-reveal fan
-       ──────────────────────────────────────── */
-    .cards-section {
-      position: relative;
-      z-index: 130;
-      background: #000;
-      min-height: 600vh;
-    }
-
-    /* Anchor sits 100vh above section bottom: navigating to it = animation progress 1 */
-    #cards-done {
-      position: absolute;
-      bottom: 100vh;
-      left: 0;
-      height: 1px;
-      width: 1px;
-      pointer-events: none;
-    }
-
-    .cards-sticky {
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      overflow: visible;
-    }
-
-    .cards-stage {
-      position: absolute;
-      inset: 0;
-    }
-
-    .service-card {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 300px;
-      height: 400px;
-      background: #0f1012;
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 22px;
-      padding: 28px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      will-change: transform, opacity;
-      opacity: 0;
-      box-shadow: 0 30px 80px rgba(0,0,0,0.6);
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .cards-backdrop {
-      position: absolute;
-      inset: -200%;
-      z-index: 18;
-      display: none;
-    }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-    }
-
-    .card-type {
-      font-family: var(--font);
-      font-weight: 400;
-      font-size: 9px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.7);
-    }
-
-    .card-stat {
-      font-family: var(--font);
-      font-weight: 700;
-      font-size: 14px;
-      letter-spacing: 0.02em;
-      color: rgba(255,255,255,0.7);
-      text-align: right;
-    }
-
-    .card-body {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .card-icon {
-      width: 46px;
-      height: 46px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      line-height: 1;
-      background: rgba(254,30,52,0.10);
-      border: 1px solid rgba(254,30,52,0.22);
-    }
-
-    .card-name {
-      font-family: var(--font);
-      font-weight: 700;
-      font-size: 23px;
-      letter-spacing: -0.03em;
-      text-transform: uppercase;
-      color: var(--bone);
-      line-height: 1.08;
-    }
-
-    .card-footer {
-      border-top: 1px solid rgba(255,255,255,0.06);
-      padding-top: 16px;
-    }
-
-    .card-desc {
-      font-family: var(--font);
-      font-weight: 400;
-      font-size: 10px;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.7);
-      line-height: 1.7;
-    }
-
-    .cards-cta-wrap {
-      position: absolute;
-      bottom: 48px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 20;
-      opacity: 0;
-      transition: opacity 0.5s ease;
-    }
-
-    .cards-cta-wrap.visible { opacity: 1; }
-
-    .cards-cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 14px 30px;
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 6px;
-      font-family: var(--font);
-      font-weight: 400;
-      font-size: 10px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--bone);
-      white-space: nowrap;
-      transition: border-color 0.3s ease, background 0.3s ease;
-    }
-
-    .cards-cta:hover {
-      border-color: var(--bone);
-      background: rgba(255,255,255,0.04);
     }
 
     /* ────────────────────────────────────────
@@ -910,7 +727,7 @@
     <ul class="nav-links" id="navLinks">
       <li><a href="#" data-original="HOME" data-scroll="top">HOME</a></li>
       <li><a href="#" data-original="WHO ARE WE" data-scroll="manifesto">WHO ARE WE</a></li>
-      <li><a href="#" data-original="SERVICES" data-scroll="cards">SERVICES</a></li>
+      <li><a href="services.html" data-original="SERVICES">SERVICES</a></li>
       <li><a href="pricing.html" data-original="PRICING">PRICING</a></li>
       <li><a href="contact.html" data-original="CONTACT">CONTACT</a></li>
       <li><a href="contact.html" class="nav-cta mobile-cta"><span class="cta-label">BOOK AN INQUIRY</span><span class="cta-arrow">↗</span></a></li>
@@ -999,110 +816,6 @@
   </section>
 
   <!-- ─────────────────────────────────
-       SERVICES CARDS — scroll-reveal fan
-       ───────────────────────────────── -->
-  <section class="cards-section" id="cards">
-    <div class="cards-sticky">
-      <div class="cards-stage">
-
-        <!-- Card 0: AI Automation -->
-        <div class="service-card" style="z-index:1">
-          <div class="card-header">
-            <span class="card-type">Service</span>
-            <span class="card-stat">500+ HRS</span>
-          </div>
-          <div class="card-body">
-            <div class="card-icon">⚡</div>
-            <div class="card-name">AI<br>AUTOMATION</div>
-          </div>
-          <div class="card-footer">
-            <div class="card-desc">Automate repetitive<br>business processes</div>
-          </div>
-        </div>
-
-        <!-- Card 1: AI Agents -->
-        <div class="service-card" style="z-index:2">
-          <div class="card-header">
-            <span class="card-type">Service</span>
-            <span class="card-stat">24/7</span>
-          </div>
-          <div class="card-body">
-            <div class="card-icon">◈</div>
-            <div class="card-name">AI<br>AGENTS</div>
-          </div>
-          <div class="card-footer">
-            <div class="card-desc">Custom AI assistants for<br>teams and customers</div>
-          </div>
-        </div>
-
-        <!-- Card 2: AI Integrations -->
-        <div class="service-card" style="z-index:3">
-          <div class="card-header">
-            <span class="card-type">Service</span>
-            <span class="card-stat">50+ APIs</span>
-          </div>
-          <div class="card-body">
-            <div class="card-icon">⟳</div>
-            <div class="card-name">AI<br>INTEGRATIONS</div>
-          </div>
-          <div class="card-footer">
-            <div class="card-desc">Integrate AI into your<br>existing software stack</div>
-          </div>
-        </div>
-
-        <!-- Card 3: AI Websites -->
-        <div class="service-card" style="z-index:4">
-          <div class="card-header">
-            <span class="card-type">Service</span>
-            <span class="card-stat">2.5×</span>
-          </div>
-          <div class="card-body">
-            <div class="card-icon">⬡</div>
-            <div class="card-name">AI<br>WEBSITES</div>
-          </div>
-          <div class="card-footer">
-            <div class="card-desc">High-converting<br>AI-powered websites</div>
-          </div>
-        </div>
-
-        <!-- Card 4: Business Workflows -->
-        <div class="service-card" style="z-index:5">
-          <div class="card-header">
-            <span class="card-type">Service</span>
-            <span class="card-stat">10+ APPS</span>
-          </div>
-          <div class="card-body">
-            <div class="card-icon">◎</div>
-            <div class="card-name">BUSINESS<br>WORKFLOWS</div>
-          </div>
-          <div class="card-footer">
-            <div class="card-desc">Connect WhatsApp, CRM,<br>Email, Sheets, ERP, APIs</div>
-          </div>
-        </div>
-
-        <!-- Card 5: AI Performance Marketing -->
-        <div class="service-card" style="z-index:6">
-          <div class="card-header">
-            <span class="card-type">Service</span>
-            <span class="card-stat">$2M+</span>
-          </div>
-          <div class="card-body">
-            <div class="card-icon">▲</div>
-            <div class="card-name">AI PERFORMANCE<br>MARKETING</div>
-          </div>
-          <div class="card-footer">
-            <div class="card-desc">Smarter targeting, better<br>conversions, AI-powered optimization</div>
-          </div>
-        </div>
-
-      </div><!-- /cards-stage -->
-
-    </div>
-    <!-- Anchor: land here = animation fully complete (sticky still pinned, progress=1) -->
-    <div id="cards-done"></div>
-  </section>
-
-  <!-- ─────────────────────────────────
        CLOSING CTA
        ───────────────────────────────── -->
   <section class="closing-section" id="closing">
@@ -1126,7 +839,7 @@
     </a>
 
     <div class="footer-nav">
-      <a href="#cards" id="footerServices">Services</a>
+      <a href="services.html" id="footerServices">Services</a>
       <a href="pricing.html">Pricing</a>
       <a href="contact.html">Contact</a>
     </div>
@@ -1362,6 +1075,19 @@
       }
     });
 
+    /* Handle cross-page anchor links (e.g. from services.html) */
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        if (window.location.hash === '#manifesto') {
+          const el = document.getElementById('manifesto');
+          if (el) {
+            const range = el.offsetHeight - window.innerHeight;
+            window.scrollTo({ top: el.offsetTop + range * 0.12, behavior: 'smooth' });
+          }
+        }
+      }, 50);
+    });
+
 
     /* ══════════════════════════════════════
        CHARACTER SPLIT
@@ -1560,159 +1286,6 @@
     })();
 
     /* ══════════════════════════════════════
-       SERVICES CARDS — scroll fan + interactive pick
-       ══════════════════════════════════════ */
-    (function () {
-      const section  = document.getElementById('cards');
-      const cards    = Array.from(section.querySelectorAll('.service-card'));
-      const ctaWrap  = document.getElementById('cardsCta');
-      const N        = cards.length;
-
-      /* Base positions set by scroll — interactive layer reads these */
-      const base = cards.map(() => ({ x: 0, y: 0, r: 0, visible: false }));
-
-      let hoveredIdx = -1;
-      let pickedIdx  = -1;
-
-      /* ── Backdrop: click outside picked card to dismiss ── */
-      const backdrop = document.createElement('div');
-      backdrop.className = 'cards-backdrop';
-      section.querySelector('.cards-sticky').appendChild(backdrop);
-      backdrop.addEventListener('click', () => { pickedIdx = -1; backdrop.style.display = 'none'; applyTransforms(); });
-
-      /* ── Per-card interaction ── */
-      cards.forEach((card, i) => {
-        card.addEventListener('mouseenter', () => {
-          if (pickedIdx === -1) { hoveredIdx = i; applyTransforms(); }
-        });
-        card.addEventListener('mouseleave', () => {
-          hoveredIdx = -1; applyTransforms();
-        });
-        card.addEventListener('click', (e) => {
-          e.stopPropagation();
-          pickedIdx = (pickedIdx === i) ? -1 : i;
-          hoveredIdx = -1;
-          backdrop.style.display = pickedIdx !== -1 ? 'block' : 'none';
-          applyTransforms();
-        });
-      });
-
-      /* ── Apply transforms based on scroll base + interactive state ── */
-      function applyTransforms() {
-        cards.forEach((card, i) => {
-          const { x, y, r, visible } = base[i];
-
-          if (!visible) {
-            card.style.transition = '';
-            card.style.opacity = 0;
-            card.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) rotate(${r}deg)`;
-            card.style.zIndex = i + 1;
-            return;
-          }
-
-          if (pickedIdx === i) {
-            /* Picked: fly to center, straighten, scale up */
-            card.style.transition = 'transform 0.55s cubic-bezier(0.16,1,0.3,1), opacity 0.3s ease, box-shadow 0.3s ease';
-            card.style.transform  = `translate(-50%, -50%) rotate(0deg) scale(1.18)`;
-            card.style.opacity    = '1';
-            card.style.zIndex     = '20';
-            card.style.boxShadow  = '0 60px 120px rgba(0,0,0,0.9), 0 0 0 1px rgba(254,30,52,0.25)';
-          } else if (pickedIdx !== -1) {
-            /* Another card is picked — dim and push back */
-            card.style.transition = 'transform 0.45s cubic-bezier(0.16,1,0.3,1), opacity 0.3s ease';
-            card.style.transform  = `translate(calc(-50% + ${x}px), calc(-50% + ${y + 20}px)) rotate(${r}deg) scale(0.9)`;
-            card.style.opacity    = '0.25';
-            card.style.zIndex     = String(i + 1);
-            card.style.boxShadow  = '';
-          } else if (hoveredIdx === i) {
-            /* Hovered — lift up, reduce tilt */
-            card.style.transition = 'transform 0.35s cubic-bezier(0.16,1,0.3,1), box-shadow 0.35s ease';
-            card.style.transform  = `translate(calc(-50% + ${x}px), calc(-50% + ${y - 32}px)) rotate(${r * 0.5}deg) scale(1.06)`;
-            card.style.opacity    = '1';
-            card.style.zIndex     = '10';
-            card.style.boxShadow  = '0 50px 100px rgba(0,0,0,0.8)';
-          } else {
-            /* Normal resting position */
-            card.style.transition = 'opacity 0.2s ease';
-            card.style.transform  = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) rotate(${r}deg)`;
-            card.style.opacity    = '1';
-            card.style.zIndex     = String(i + 1);
-            card.style.boxShadow  = '';
-          }
-        });
-      }
-
-      /* ── Slot positions ── */
-      function getSlots() {
-        const vw    = window.innerWidth;
-        const stepX = Math.min(135, vw * 0.088);
-        const span  = (N - 1) * stepX;
-        const mid = (N - 1) / 2;
-        return cards.map((_, i) => ({
-          x: -span / 2 + i * stepX,
-          y: Math.pow(i - mid, 2) * 9 - 24,   // symmetric arc: center highest, outer cards dip down
-          r: -((N - 1) / 2 - i) * 3.4,
-        }));
-      }
-
-      /* Shared animation: applies card positions based on scrolled distance */
-      function applyAnim(scrolled, sectionH, vw) {
-        if (window.innerWidth <= 900) return; // Disable JS animation on mobile so CSS takes over
-        const vh       = window.innerHeight;
-        const range    = sectionH - vh;
-        const progress = Math.min(1, scrolled / range);
-        const slots    = getSlots();
-        const perCard  = 0.75 / N;
-        let allIn = true;
-
-        cards.forEach((card, i) => {
-          const p    = Math.max(0, Math.min(1, (progress - i * perCard) / perCard));
-          const ease = p * p * (3 - 2 * p);
-          if (p < 1) allIn = false;
-
-          const sx = vw * 0.58, sy = -50, sr = 22;
-          base[i].x       = sx + (slots[i].x - sx) * ease;
-          base[i].y       = sy + (slots[i].y - sy) * ease;
-          base[i].r       = sr + (slots[i].r - sr) * ease;
-          base[i].visible = p > 0.03;
-
-          card.style.transition = '';
-          card.style.transform  = `translate(calc(-50% + ${base[i].x}px), calc(-50% + ${base[i].y}px)) rotate(${base[i].r}deg)`;
-          card.style.opacity    = base[i].visible ? '1' : '0';
-          card.style.zIndex     = String(i + 1);
-        });
-
-        ctaWrap.classList.toggle('visible', allIn);
-      }
-
-      /* ── Desktop: scroll event + getBoundingClientRect (original, unchanged) ── */
-      function onScroll() {
-        if (pickedIdx !== -1) return;
-        const rect     = section.getBoundingClientRect();
-        const sectionH = section.offsetHeight;
-        const vw       = window.innerWidth;
-        const scrolled = Math.max(0, -rect.top);
-        applyAnim(scrolled, sectionH, vw);
-      }
-      window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', onScroll, { passive: true });
-      onScroll();
-
-      /* ── Mobile: rAF loop with live window.scrollY ── */
-      if ('ontouchstart' in window) {
-        (function rafLoop() {
-          if (pickedIdx === -1) {
-            const sectionH = section.offsetHeight;
-            const vw       = window.innerWidth;
-            const scrolled = Math.max(0, window.scrollY - section.offsetTop);
-            applyAnim(scrolled, sectionH, vw);
-          }
-          requestAnimationFrame(rafLoop);
-        })();
-      }
-    })();
-
-    /* ══════════════════════════════════════
        MOBILE MENU TOGGLE
        ══════════════════════════════════════ */
     const mobileMenuToggle = document.getElementById('mobileMenuToggle');
@@ -1730,17 +1303,7 @@
       });
     }
 
-    const cards = document.querySelectorAll('.service-card');
-    cards.forEach(card => {
-      card.addEventListener('click', () => {
-        if (window.innerWidth <= 900) {
-          const isExpanded = card.classList.contains('expanded');
-          cards.forEach(c => c.classList.remove('expanded'));
-          if (!isExpanded) card.classList.add('expanded');
-        }
-      });
-    });
-  </script>
+    </script>
 
 </body>
 </html>
