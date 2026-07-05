@@ -358,8 +358,9 @@
       /* ── Nav ── */
       nav { padding: 12px 20px; }
       .nav-links { display: none; }
-      .nav-cta { display: none; }
-      .nav-logo-img { height: 50px; }
+      .nav-cta { display: inline-flex; padding: 7px 14px; }
+      .nav-cta .cta-label { font-size: 9px; }
+      .nav-logo-img { height: 40px; }
 
       /* ── Hero ── */
       .hero { min-height: 100svh; }
@@ -370,14 +371,12 @@
         width: 100%;
         justify-content: center;
         flex-wrap: wrap;
-        overflow: hidden;
       }
       /* Scale down all headline text to fit narrow viewports */
       .hl-caps  {
         font-size: clamp(22px, 6vw, 56px);
         letter-spacing: -0.04em;
         white-space: normal;
-        word-break: break-word;
         max-width: 100%;
       }
       .hl-serif { font-size: clamp(14px, 3.5vw, 30px); }
@@ -1323,7 +1322,7 @@
       /* Preserve the parent class (hl-caps / hl-serif) for font styling;
          replace its text content with a series of single-char spans. */
       el.innerHTML = [...el.textContent].map(ch =>
-        `<span class="hl-char">${ch === ' ' ? '&nbsp;' : ch}</span>`
+        `<span class="hl-char">${ch === ' ' ? ' ' : ch}</span>`
       ).join('');
     });
 
