@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contact — zdevs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>zdevs | Contact</title>
   <link rel="icon" type="image/png" href="favicon.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -88,10 +88,11 @@
       .mobile-menu-toggle.active .bar:nth-child(2) { opacity: 0; }
       .mobile-menu-toggle.active .bar:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
       .nav-links {
-        display: none; flex-direction: column; width: 100%; margin-top: 16px; gap: 12px;
-        background: var(--void); padding: 16px; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
+        display: none !important; flex-direction: column !important; width: 100% !important; margin-top: 16px !important; gap: 12px !important;
+        background: var(--void) !important; padding: 16px !important; border: 1px solid rgba(255,255,255,0.1) !important; border-radius: 8px !important;
+        align-items: flex-start !important; text-align: left !important;
       }
-      .nav-links.active { display: flex; }
+      .nav-links.active { display: flex !important; }
       .nav-links a { font-size: 14px; }
       .desktop-cta { display: none !important; }
       .mobile-cta { display: inline-flex !important; justify-content: center; width: 100%; margin-top: 12px; padding: 12px; }
