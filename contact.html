@@ -380,8 +380,9 @@
       .contact-info { position: static; }
       .form-row { grid-template-columns: 1fr; }
       .form-submit { flex-direction: column; align-items: flex-start; gap: 16px; }
-      .site-footer { padding: 24px 20px; flex-direction: row; align-items: center; justify-content: space-between; gap: 16px; }
-      .footer-nav  { position: static; transform: none; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      .site-footer { padding: 24px 20px; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; }
+      .footer-nav  { position: static; transform: none; flex-wrap: wrap; gap: 16px; justify-content: flex-end; flex: 1; display: flex; }
+      .footer-copy { flex-basis: 100%; text-align: center; margin-top: 8px; }
     }
   </style>
 </head>
