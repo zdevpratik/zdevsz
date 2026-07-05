@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing — zdevs</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,opsz,wght@1,14..120,300;1,14..120,700&family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --void:     #080808;
+      --bone:     #fcfcfc;
+      --ash:      #d4d2d2;
+      --red:      #fe1e34;
+      --font:     'Inter', ui-sans-serif, system-ui, sans-serif;
+      --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      background: var(--void);
+      color: var(--bone);
+      font-family: var(--font);
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+
+    /* ── Cursor ── */
+    #cursor { display: none; }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px 48px;
+      background: rgba(8,8,8,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .nav-logo { display: flex; align-items: center; }
+    .nav-logo-img { height: 170px; width: auto; display: block; transition: opacity 0.3s ease; }
+    .nav-logo:hover .nav-logo-img { opacity: 0.85; }
+
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-links a {
+      font-weight: 400; font-size: 10px;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: var(--ash); transition: color .2s ease;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--bone); }
+
+    .nav-cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 9px 20px;
+      border: 1px solid rgba(212,210,210,.5); border-radius: 8px;
+      font-weight: 400; font-size: 10px;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: var(--bone);
+      transition: border-color .3s ease;
+    }
+    .nav-cta:hover { border-color: var(--bone); }
+
+    @media (max-width: 900px) {
+      body { touch-action: pan-y; overflow-x: clip; }
+      nav { padding: 12px 20px; }
+      .nav-links { display: none; }
+      .nav-cta { display: none; }
+      .nav-logo-img { height: 50px; }
+    }
+
+    /* ── Page content ── */
+    .page-wrap {
+      padding-top: 120px;
+      padding-bottom: 100px;
+      min-height: 100vh;
+    }
+
+    /* ── Hero ── */
+    .pricing-hero {
+      text-align: center;
+      padding: 80px 32px 100px;
+    }
+
+    .pricing-eyebrow {
+      display: block;
+      font-weight: 400;
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      margin-bottom: 28px;
+    }
+
+    .pricing-headline {
+      font-weight: 700;
+      font-size: clamp(52px, 8vw, 120px);
+      letter-spacing: -0.045em;
+      text-transform: uppercase;
+      line-height: 0.92;
+      color: var(--bone);
+      margin-bottom: 28px;
+    }
+
+    .pricing-headline em {
+      font-family: 'Cormorant', Georgia, serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 0.82em;
+      color: rgba(255,255,255,0.45);
+      letter-spacing: -0.02em;
+    }
+
+    .pricing-sub {
+      font-weight: 300;
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.8;
+    }
+
+    /* ── Cards ── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    .pricing-card {
+      background: #0f1012;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 22px;
+      padding: 40px 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s ease, transform 0.4s var(--ease-expo);
+    }
+
+    .pricing-card:hover {
+      border-color: rgba(255,255,255,0.15);
+      transform: translateY(-6px);
+    }
+
+    /* Featured card — middle one */
+    .pricing-card.featured {
+      border-color: rgba(16,185,129,0.35);
+      background: #0a110e;
+    }
+    .pricing-card.featured:hover { border-color: rgba(16,185,129,0.6); }
+
+    .pricing-card.featured::before {
+      content: 'MOST POPULAR';
+      position: absolute;
+      top: 20px; right: 20px;
+      font-size: 8px;
+      letter-spacing: 0.18em;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #10b981;
+      background: rgba(16,185,129,0.1);
+      border: 1px solid rgba(16,185,129,0.25);
+      border-radius: 4px;
+      padding: 4px 8px;
+    }
+
+    .card-tier {
+      font-weight: 400;
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.25);
+      margin-bottom: 16px;
+    }
+
+    .card-plan-name {
+      font-weight: 700;
+      font-size: 28px;
+      letter-spacing: -0.04em;
+      text-transform: uppercase;
+      color: var(--bone);
+      margin-bottom: 10px;
+    }
+
+    .card-tagline {
+      font-weight: 300;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      margin-bottom: 36px;
+      line-height: 1.6;
+    }
+
+    .card-divider {
+      width: 100%;
+      height: 1px;
+      background: rgba(255,255,255,0.06);
+      margin-bottom: 32px;
+    }
+
+    .card-features {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      flex: 1;
+      margin-bottom: 40px;
+    }
+
+    .card-feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.5;
+    }
+
+    .card-feature .feat-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--red);
+      flex-shrink: 0;
+      margin-top: 4px;
+      opacity: 0.7;
+    }
+
+    .pricing-card.featured .card-feature { color: rgba(255,255,255,0.65); }
+    .pricing-card.featured .feat-dot { opacity: 1; background: #10b981; }
+
+    .card-price-label {
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+      margin-bottom: 16px;
+    }
+
+    .card-cta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 16px 24px;
+      border-radius: 8px;
+      font-weight: 400;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--bone);
+      border: 1px solid rgba(255,255,255,0.2);
+      transition: border-color 0.3s ease, background 0.3s ease, color 0.3s ease;
+      cursor: pointer;
+    }
+    .card-cta:hover {
+      border-color: var(--bone);
+      background: rgba(255,255,255,0.05);
+    }
+
+    .pricing-card.featured .card-cta {
+      background: #10b981;
+      border-color: #10b981;
+      color: var(--bone);
+    }
+    .pricing-card.featured .card-cta:hover {
+      background: #0fd490;
+      border-color: #0fd490;
+    }
+
+    /* ── Bottom note ── */
+    .pricing-note {
+      text-align: center;
+      margin-top: 64px;
+      padding: 0 32px;
+    }
+    .pricing-note p {
+      font-weight: 300;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.22);
+      line-height: 1.8;
+    }
+    .pricing-note span { color: rgba(255,255,255,0.45); }
+
+    /* ── Footer ── */
+    .site-footer {
+      position: relative;
+      z-index: 151;
+      background: #050505;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 32px 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .footer-nav { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 28px; }
+    .footer-nav a {
+      font-weight: 400; font-size: 10px;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(255,255,255,0.35); transition: color 0.2s ease;
+    }
+    .footer-nav a:hover { color: var(--bone); }
+    .footer-copy {
+      font-size: 10px; letter-spacing: 0.08em;
+      text-transform: uppercase; color: rgba(255,255,255,0.18);
+    }
+
+    @media (max-width: 900px) {
+      .pricing-grid { grid-template-columns: 1fr; padding: 0 24px; }
+      .pricing-hero { padding: 60px 24px 80px; }
+      .pricing-hero h1 { font-size: clamp(36px, 9vw, 72px); }
+      .site-footer { padding: 24px 28px; flex-direction: column; align-items: flex-start; gap: 16px; }
+      .footer-nav  { position: static; transform: none; flex-wrap: wrap; gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="cursor"></div>
+
+  <!-- Nav -->
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <img src="logo with bg.png" alt="zdevs" class="nav-logo-img">
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">HOME</a></li>
+      <li><a href="index.html#manifesto-done">WHO ARE WE</a></li>
+      <li><a href="index.html#cards-done">SERVICES</a></li>
+      <li><a href="pricing.html" class="active">PRICING</a></li>
+      <li><a href="contact.html">CONTACT</a></li>
+    </ul>
+    <a href="contact.html" class="nav-cta">
+      <span>BOOK AN INQUIRY</span>
+      <span>↗</span>
+    </a>
+  </nav>
+
+  <div class="page-wrap">
+
+    <!-- Hero -->
+    <div class="pricing-hero">
+      <span class="pricing-eyebrow">zdevs studio &nbsp;·&nbsp; investment</span>
+      <h1 class="pricing-headline">
+        <em>simple,</em><br>
+        TRANSPARENT<br>
+        PRICING
+      </h1>
+      <p class="pricing-sub">Every project is unique. Book a discovery call and we'll build a plan around your goals.</p>
+    </div>
+
+    <!-- Cards -->
+    <div class="pricing-grid">
+
+      <!-- LAUNCH -->
+      <div class="pricing-card">
+        <p class="card-tier">Tier 01</p>
+        <h2 class="card-plan-name">LAUNCH</h2>
+        <p class="card-tagline">For startups &amp; early-stage brands ready to make their mark.</p>
+        <div class="card-divider"></div>
+        <ul class="card-features">
+          <li class="card-feature"><span class="feat-dot"></span>Custom 3D Website (up to 5 pages)</li>
+          <li class="card-feature"><span class="feat-dot"></span>1 AI Automation workflow</li>
+          <li class="card-feature"><span class="feat-dot"></span>Performance Marketing setup</li>
+          <li class="card-feature"><span class="feat-dot"></span>Monthly analytics report</li>
+          <li class="card-feature"><span class="feat-dot"></span>2 revision rounds</li>
+        </ul>
+        <p class="card-price-label">Pricing on discovery call</p>
+        <a href="contact.html" class="card-cta">BOOK AN INQUIRY &nbsp;↗</a>
+      </div>
+
+      <!-- SCALE (featured) -->
+      <div class="pricing-card featured">
+        <p class="card-tier">Tier 02</p>
+        <h2 class="card-plan-name">SCALE</h2>
+        <p class="card-tagline">For growing businesses ready to automate and dominate their market.</p>
+        <div class="card-divider"></div>
+        <ul class="card-features">
+          <li class="card-feature"><span class="feat-dot"></span>Everything in Launch</li>
+          <li class="card-feature"><span class="feat-dot"></span>Full AI Automation suite</li>
+          <li class="card-feature"><span class="feat-dot"></span>AI Agents deployment (up to 3)</li>
+          <li class="card-feature"><span class="feat-dot"></span>Performance Marketing campaigns</li>
+          <li class="card-feature"><span class="feat-dot"></span>Monthly strategy calls</li>
+          <li class="card-feature"><span class="feat-dot"></span>Priority support</li>
+        </ul>
+        <p class="card-price-label">Pricing on discovery call</p>
+        <a href="contact.html" class="card-cta">BOOK AN INQUIRY &nbsp;↗</a>
+      </div>
+
+      <!-- ENTERPRISE -->
+      <div class="pricing-card">
+        <p class="card-tier">Tier 03</p>
+        <h2 class="card-plan-name">ENTERPRISE</h2>
+        <p class="card-tagline">For established brands demanding a full-stack AI-powered growth engine.</p>
+        <div class="card-divider"></div>
+        <ul class="card-features">
+          <li class="card-feature"><span class="feat-dot"></span>Everything in Scale</li>
+          <li class="card-feature"><span class="feat-dot"></span>Custom AI Solutions architecture</li>
+          <li class="card-feature"><span class="feat-dot"></span>Unlimited AI Agents</li>
+          <li class="card-feature"><span class="feat-dot"></span>Dedicated growth strategist</li>
+          <li class="card-feature"><span class="feat-dot"></span>Quarterly business reviews</li>
+          <li class="card-feature"><span class="feat-dot"></span>White-glove onboarding</li>
+        </ul>
+        <p class="card-price-label">Pricing on discovery call</p>
+        <a href="contact.html" class="card-cta">BOOK AN INQUIRY &nbsp;↗</a>
+      </div>
+
+    </div>
+
+    <!-- Note -->
+    <div class="pricing-note">
+      <p>All plans are <span>custom-scoped</span> to your project. No hidden fees. No lock-in contracts.<br>
+      Final pricing is confirmed after your free discovery call.</p>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <a href="index.html" class="nav-logo">
+      <img src="logo with bg.png" alt="zdevs" class="nav-logo-img">
+    </a>
+    <div class="footer-nav">
+      <a href="index.html#cards-done">Services</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <p class="footer-copy">© 2026 zdevs</p>
+  </footer>
+
+  <script>
+    /* Cursor */
+    const cursor = document.getElementById('cursor');
+    let mx = -100, my = -100, cx = -100, cy = -100;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    (function animateCursor() {
+      cx += (mx - cx) * 0.18;
+      cy += (my - cy) * 0.18;
+      cursor.style.left = cx + 'px';
+      cursor.style.top  = cy + 'px';
+      requestAnimationFrame(animateCursor);
+    })();
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+    });
+  </script>
+</body>
+</html>

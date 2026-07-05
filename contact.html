@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — zdevs</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,opsz,wght@1,14..120,300;1,14..120,700&family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --void:      #080808;
+      --bone:      #fcfcfc;
+      --ash:       #d4d2d2;
+      --red:       #fe1e34;
+      --font:      'Inter', ui-sans-serif, system-ui, sans-serif;
+      --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      background: var(--void);
+      color: var(--bone);
+      font-family: var(--font);
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+
+    /* ── Cursor ── */
+    #cursor { display: none; }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px 48px;
+      background: rgba(8,8,8,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .nav-logo { display: flex; align-items: center; }
+    .nav-logo-img { height: 170px; width: auto; display: block; transition: opacity 0.3s ease; }
+    .nav-logo:hover .nav-logo-img { opacity: 0.85; }
+
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-links a {
+      font-weight: 400; font-size: 10px;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: var(--ash); transition: color .2s ease;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--bone); }
+
+    .nav-cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 9px 20px;
+      border: 1px solid rgba(212,210,210,.5); border-radius: 8px;
+      font-weight: 400; font-size: 10px;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: var(--bone); transition: border-color .3s ease;
+    }
+    .nav-cta:hover { border-color: var(--bone); }
+
+    @media (max-width: 900px) {
+      body { touch-action: pan-y; overflow-x: clip; }
+      nav { padding: 12px 20px; }
+      .nav-links { display: none; }
+      .nav-cta { display: none; }
+      .nav-logo-img { height: 50px; }
+    }
+
+    /* ── Page layout ── */
+    .page-wrap {
+      padding-top: 130px;
+      padding-bottom: 100px;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding-left: 48px;
+      padding-right: 48px;
+    }
+
+    /* ── Hero text ── */
+    .contact-hero {
+      margin-bottom: 72px;
+    }
+
+    .contact-eyebrow {
+      display: block;
+      font-weight: 400;
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.28);
+      margin-bottom: 24px;
+    }
+
+    .contact-headline {
+      font-weight: 700;
+      font-size: clamp(48px, 7vw, 110px);
+      letter-spacing: -0.045em;
+      text-transform: uppercase;
+      line-height: 0.92;
+      color: var(--bone);
+    }
+
+    .contact-headline em {
+      font-family: 'Cormorant', Georgia, serif;
+      font-style: italic;
+      font-weight: 300;
+      color: rgba(255,255,255,0.4);
+      font-size: 0.82em;
+    }
+
+    .contact-headline .hl-red { color: var(--red); }
+
+    /* ── Two-column layout ── */
+    .contact-body {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    /* Left: info */
+    .contact-info {
+      position: sticky;
+      top: 120px;
+    }
+
+    .info-label {
+      font-weight: 400;
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.22);
+      margin-bottom: 32px;
+    }
+
+    .info-block {
+      margin-bottom: 36px;
+    }
+
+    .info-block-title {
+      font-weight: 700;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 8px;
+    }
+
+    .info-block-value {
+      font-weight: 300;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.7;
+    }
+
+    .info-block-value a:hover { color: var(--bone); }
+
+    .info-divider {
+      width: 40px;
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+      margin: 40px 0;
+    }
+
+    .info-promise {
+      font-weight: 300;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.22);
+      line-height: 1.9;
+    }
+
+    .info-promise span {
+      color: var(--red);
+    }
+
+    /* ── Form ── */
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .form-group label {
+      font-weight: 400;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 16px 18px;
+      font-family: var(--font);
+      font-weight: 300;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      color: var(--bone);
+      outline: none;
+      transition: border-color 0.3s ease, background 0.3s ease;
+      width: 100%;
+      -webkit-appearance: none;
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: rgba(255,255,255,0.2); }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: rgba(254,30,52,0.5);
+      background: rgba(254,30,52,0.03);
+    }
+
+    .form-group select option {
+      background: #111;
+      color: var(--bone);
+    }
+
+    .form-group textarea {
+      resize: none;
+      height: 160px;
+      line-height: 1.7;
+    }
+
+    /* Submit */
+    .form-submit {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 8px;
+    }
+
+    .form-note {
+      font-weight: 300;
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.18);
+    }
+
+    .submit-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 40px;
+      background: var(--red);
+      border: 1px solid var(--red);
+      border-radius: 8px;
+      font-family: var(--font);
+      font-weight: 700;
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--bone);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+
+    .submit-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.1);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s var(--ease-expo);
+    }
+    .submit-btn:hover::before { transform: scaleX(1); }
+    .submit-btn span { position: relative; z-index: 1; }
+
+    /* ── Success state ── */
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 80px 40px;
+      border: 1px solid rgba(16,185,129,0.2);
+      border-radius: 22px;
+      background: rgba(16,185,129,0.03);
+    }
+    .form-success.show { display: block; }
+    .success-icon { font-size: 40px; margin-bottom: 24px; }
+    .success-title {
+      font-weight: 700;
+      font-size: 24px;
+      letter-spacing: -0.03em;
+      text-transform: uppercase;
+      color: var(--bone);
+      margin-bottom: 14px;
+    }
+    .success-msg {
+      font-weight: 300;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      line-height: 1.8;
+    }
+
+    /* ── Footer ── */
+    .site-footer {
+      position: relative;
+      z-index: 151;
+      background: #050505;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 32px 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-top: 100px;
+    }
+    .footer-nav { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 28px; }
+    .footer-nav a {
+      font-weight: 400; font-size: 10px;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(255,255,255,0.35); transition: color 0.2s ease;
+    }
+    .footer-nav a:hover { color: var(--bone); }
+    .footer-copy { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.18); }
+
+    @media (max-width: 900px) {
+      .page-wrap { padding: 110px 24px 80px; }
+      .contact-body { grid-template-columns: 1fr; gap: 48px; }
+      .contact-info { position: static; }
+      .form-row { grid-template-columns: 1fr; }
+      .form-submit { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .site-footer { padding: 24px 28px; flex-direction: column; align-items: flex-start; gap: 16px; }
+      .footer-nav  { position: static; transform: none; flex-wrap: wrap; gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="cursor"></div>
+
+  <!-- Nav -->
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <img src="logo with bg.png" alt="zdevs" class="nav-logo-img">
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">HOME</a></li>
+      <li><a href="index.html#manifesto-done">WHO ARE WE</a></li>
+      <li><a href="index.html#cards-done">SERVICES</a></li>
+      <li><a href="pricing.html">PRICING</a></li>
+      <li><a href="contact.html" class="active">CONTACT</a></li>
+    </ul>
+    <a href="contact.html" class="nav-cta">
+      <span>BOOK AN INQUIRY</span>
+      <span>↗</span>
+    </a>
+  </nav>
+
+  <div class="page-wrap">
+
+    <!-- Hero -->
+    <div class="contact-hero">
+      <span class="contact-eyebrow">zdevs studio &nbsp;·&nbsp; get in touch</span>
+      <h1 class="contact-headline">
+        LET'S BUILD<br>
+        <em>something</em><br>
+        <span class="hl-red">GREAT.</span>
+      </h1>
+    </div>
+
+    <!-- Body -->
+    <div class="contact-body">
+
+      <!-- Left info -->
+      <div class="contact-info">
+        <p class="info-label">Contact details</p>
+
+        <div class="info-block">
+          <p class="info-block-title">Email</p>
+          <p class="info-block-value">
+            <a href="mailto:work.zdevs@gmail.com">work.zdevs@gmail.com</a>
+          </p>
+        </div>
+
+        <div class="info-block">
+          <p class="info-block-title">Response time</p>
+          <p class="info-block-value">Within 24 hours</p>
+        </div>
+
+        <div class="info-block">
+          <p class="info-block-title">Based in</p>
+          <p class="info-block-value">India &nbsp;·&nbsp; Working globally</p>
+        </div>
+
+        <div class="info-divider"></div>
+
+        <p class="info-promise">
+          Every inquiry is reviewed personally.<br>
+          No bots. No templates.<br>
+          Just <span>real people</span>, real answers.
+        </p>
+      </div>
+
+      <!-- Right form -->
+      <div>
+        <!-- Form (Formsubmit delivers to work.zdevs@gmail.com) -->
+        <form
+          class="contact-form"
+          id="contactForm"
+          action="https://formsubmit.co/work.zdevs@gmail.com"
+          method="POST"
+        >
+          <!-- Formsubmit config (hidden) -->
+          <input type="hidden" name="_subject" value="New Inquiry — zdevs">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="hidden" name="_next" value="https://zdevs.com/contact.html?sent=1">
+          <input type="text" name="_honey" style="display:none">
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name">Full Name *</label>
+              <input type="text" id="name" name="name" placeholder="Your name" required>
+            </div>
+            <div class="form-group">
+              <label for="email">Email Address *</label>
+              <input type="email" id="email" name="email" placeholder="you@company.com" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="company">Company / Brand</label>
+              <input type="text" id="company" name="company" placeholder="Your company (optional)">
+            </div>
+            <div class="form-group">
+              <label for="service">Service Interested In *</label>
+              <select id="service" name="service" required>
+                <option value="" disabled selected>Select a service</option>
+                <option value="AI Automation">AI Automation</option>
+                <option value="AI Agents">AI Agents</option>
+                <option value="3D Website">3D Website</option>
+                <option value="Performance Marketing">Performance Marketing</option>
+                <option value="AI Solutions">AI Solutions</option>
+                <option value="Growth Strategy">Growth Strategy</option>
+                <option value="Full Suite">Full Suite (Everything)</option>
+                <option value="Not Sure">Not Sure Yet</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="message">Tell us about your project *</label>
+            <textarea id="message" name="message" placeholder="What are you looking to build? Share as much or as little as you'd like." required></textarea>
+          </div>
+
+          <div class="form-submit">
+            <p class="form-note">* Required fields</p>
+            <button type="submit" class="submit-btn">
+              <span>SEND INQUIRY</span>
+              <span>↗</span>
+            </button>
+          </div>
+        </form>
+
+        <!-- Success message (shown via JS when ?sent=1 in URL) -->
+        <div class="form-success" id="formSuccess">
+          <div class="success-icon">✓</div>
+          <h2 class="success-title">Inquiry Sent!</h2>
+          <p class="success-msg">
+            We've received your message and will get back to you<br>
+            at your email within 24 hours.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <a href="index.html" class="nav-logo">
+      <img src="logo with bg.png" alt="zdevs" class="nav-logo-img">
+    </a>
+    <div class="footer-nav">
+      <a href="index.html#cards-done">Services</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <p class="footer-copy">© 2026 zdevs</p>
+  </footer>
+
+  <script>
+    /* Cursor */
+    const cursor = document.getElementById('cursor');
+    let mx = -100, my = -100, cx = -100, cy = -100;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    (function animateCursor() {
+      cx += (mx - cx) * 0.18;
+      cy += (my - cy) * 0.18;
+      cursor.style.left = cx + 'px';
+      cursor.style.top  = cy + 'px';
+      requestAnimationFrame(animateCursor);
+    })();
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+    });
+
+    /* Show success state if redirected back with ?sent=1 */
+    if (new URLSearchParams(window.location.search).get('sent') === '1') {
+      document.getElementById('contactForm').style.display = 'none';
+      document.getElementById('formSuccess').classList.add('show');
+    }
+  </script>
+</body>
+</html>
