@@ -21,6 +21,18 @@
       --font:     'Inter', ui-sans-serif, system-ui, sans-serif;
       --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
     }
+    
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.4;
+    }
+    .page-wrap, nav, .site-footer {
+      position: relative;
+      z-index: 10;
+    }
 
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     html { font-size: 16px; scroll-behavior: smooth; }
@@ -102,14 +114,15 @@
 
     /* ── Page content ── */
     .page-wrap {
-      padding-top: 140px;
+      padding-top: 130px;
       padding-bottom: 100px;
       min-height: 100vh;
     }
 
     .services-hero {
       text-align: center;
-      padding: 40px 32px 40px;
+      padding: 0 32px 40px;
+      margin-bottom: 72px;
     }
 
     .services-eyebrow {
@@ -187,30 +200,15 @@
       stroke: var(--green);
       stroke-width: 8;
       stroke-linecap: round;
-      stroke-dasharray: 4000;
-      stroke-dashoffset: 4000;
-      transition: stroke-dashoffset 3s ease-in-out;
-    }
-    
-    .roadmap-section.in-view .animated-path {
-      stroke-dashoffset: 0;
+      /* Animation controlled by JS */
     }
 
-    /* ── Step Points ── */
     .step-point {
       position: absolute;
       z-index: 10;
       display: flex;
       align-items: center;
       width: 50%;
-      opacity: 0;
-      transform: translateY(40px);
-      transition: opacity 0.8s ease, transform 0.8s var(--ease-expo);
-    }
-
-    .roadmap-section.in-view .step-point.visible {
-      opacity: 1;
-      transform: translateY(0);
     }
 
     .step-1 {
@@ -567,17 +565,17 @@
 
 
 
-  <!-- Navigation -->
+  <canvas id="bg-canvas"></canvas>
   <nav id="navbar">
-    <a href="index.html" class="nav-logo">
+    <a href="home.html" class="nav-logo">
       <img src="logo with bg.png" alt="zdevs" class="nav-logo-img">
     </a>
     <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menu">
       <div class="bar"></div><div class="bar"></div><div class="bar"></div>
     </button>
     <ul class="nav-links" id="navLinks">
-      <li><a href="index.html">HOME</a></li>
-      <li><a href="index.html#manifesto">WHO ARE WE</a></li>
+      <li><a href="home.html">HOME</a></li>
+      <li><a href="home.html#we-are">WHO ARE WE</a></li>
       <li><a href="services.html" class="active">SERVICES</a></li>
       <li><a href="pricing.html">PRICING</a></li>
       <li><a href="contact.html">CONTACT</a></li>
@@ -742,14 +740,14 @@
 
   <!-- Footer -->
   <footer class="site-footer">
-    <a href="index.html" class="nav-logo">
+    <a href="home.html" class="nav-logo">
       <img src="logo with bg.png" alt="zdevs" class="nav-logo-img">
     </a>
     <div class="footer-nav">
-      <a href="index.html">Home</a>
-      <a href="index.html#manifesto">Who are we</a>
+      <a href="home.html#we-are">Who Are We</a>
       <a href="services.html">Services</a>
       <a href="pricing.html">Pricing</a>
+      <a href="contact.html">Contact</a>
     </div>
     <p class="footer-copy">© 2026 zdevs</p>
   </footer>
@@ -785,32 +783,153 @@
       });
     }
 
-    /* Roadmap Animation */
-    const roadmapSection = document.getElementById('roadmapSection');
-    const points = document.querySelectorAll('.step-point');
+    /* ══════════════════════════════════════
+       UNIQUE CANVAS BACKGROUND (PARTICLE NETWORK)
+       ══════════════════════════════════════ */
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    let particles = [];
+    let numParticles = 100;
+    let connectionDistance = 160;
+    
+    let mouse = { x: -1000, y: -1000 };
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          // Add class to trigger SVG stroke animation
-          roadmapSection.classList.add('in-view');
-          
-          // Trigger points sequentially based on line timing
-          points.forEach(point => {
-            const delay = parseInt(point.getAttribute('data-delay'), 10);
-            setTimeout(() => {
-              point.classList.add('visible');
-            }, delay);
-          });
-          
-          observer.disconnect();
-        }
-      });
-    }, { threshold: 0.15 });
-
-    if (roadmapSection) {
-      observer.observe(roadmapSection);
+    function initCanvas() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+      
+      particles = [];
+      for(let i=0; i<numParticles; i++) {
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * 0.5,
+          vy: (Math.random() - 0.5) * 0.5,
+          color: Math.random() > 0.85 ? '#3df59a' : '#d4d2d2'
+        });
+      }
     }
+
+    function drawNetwork() {
+      ctx.clearRect(0, 0, width, height);
+      
+      for(let i=0; i<particles.length; i++) {
+        let p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        
+        if(p.x < 0 || p.x > width) p.vx *= -1;
+        if(p.y < 0 || p.y > height) p.vy *= -1;
+        
+        let dxMouse = p.x - mouse.x;
+        let dyMouse = p.y - mouse.y;
+        let distMouse = Math.sqrt(dxMouse*dxMouse + dyMouse*dyMouse);
+        if (distMouse < 150) {
+          p.x += dxMouse * 0.02;
+          p.y += dyMouse * 0.02;
+        }
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.color === '#3df59a' ? 2 : 1.5, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+
+        for(let j=i+1; j<particles.length; j++) {
+          let p2 = particles[j];
+          let dx2 = p.x - p2.x;
+          let dy2 = p.y - p2.y;
+          let dist2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
+          
+          if (dist2 < connectionDistance) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p2.x, p2.y);
+            let opacity = 1 - (dist2 / connectionDistance);
+            ctx.strokeStyle = p.color === '#3df59a' || p2.color === '#3df59a' 
+              ? `rgba(61, 245, 154, ${opacity * 0.85})` 
+              : `rgba(212, 210, 210, ${opacity * 0.45})`;
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+          }
+        }
+      }
+      
+      requestAnimationFrame(drawNetwork);
+    }
+
+    initCanvas();
+    drawNetwork();
+    
+    window.addEventListener('resize', initCanvas);
+    document.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+    document.addEventListener('mouseleave', () => {
+      mouse.x = -1000;
+      mouse.y = -1000;
+    });
+
+    /* Roadmap Two-Stage Animation */
+    const roadmapSection = document.getElementById('roadmapSection');
+    const animatedPaths = document.querySelectorAll('.animated-path');
+    const step1 = document.querySelector('.step-1');
+    const step2 = document.querySelector('.step-2');
+    const step3 = document.querySelector('.step-3');
+
+    // 1. Initialize exact path lengths without animating them initially
+    animatedPaths.forEach(path => {
+      const length = path.getTotalLength();
+      path.style.transition = 'none'; // disable transition
+      path.style.strokeDasharray = length;
+      path.style.strokeDashoffset = length;
+      
+      // Force a layout reflow to apply the offset instantly
+      path.getBoundingClientRect();
+      
+      // Re-enable transition for when the observers trigger
+      path.style.transition = 'stroke-dashoffset 2s ease-in-out';
+      path.dataset.totalLength = length;
+    });
+
+    // 2. Observer for Stage 1: Triggered when step-2 (Automate) is fully in view
+    const observer1 = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        // Animate paths to half (Automate)
+        animatedPaths.forEach(path => {
+          const length = parseFloat(path.dataset.totalLength);
+          path.style.strokeDashoffset = length / 2; 
+        });
+        
+        // Show steps 1 & 2
+        setTimeout(() => step1.classList.add('visible'), 200);
+        setTimeout(() => step2.classList.add('visible'), 1200);
+        
+        observer1.disconnect();
+      }
+    }, { threshold: 0.9 }); // Triggers when Automate is almost fully visible at the bottom
+
+    if (step2) observer1.observe(step2);
+
+    // 3. Observer for Stage 2: Triggered when step-3 (GROW) enters view
+    const observer2 = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        // Animate paths to the end (Grow)
+        animatedPaths.forEach(path => {
+          path.style.strokeDashoffset = 0;
+        });
+        
+        // Show step 3 after line travels down
+        setTimeout(() => step3.classList.add('visible'), 1200);
+        
+        observer2.disconnect();
+      }
+    }, { threshold: 0.8 }); // Trigger when step3 is mostly in view
+
+    if (step3) observer2.observe(step3);
   </script>
 </body>
 </html>

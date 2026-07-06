@@ -70,7 +70,11 @@
        ──────────────────────────────────────── */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-    html { font-size: 16px; scroll-behavior: smooth; }
+    html { font-size: 16px; scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+    .hero, .we-section, .manifesto-section, .closing-section {
+      scroll-snap-align: start;
+      min-height: 100dvh;
+    }
 
     body {
       background: var(--void);
@@ -161,8 +165,7 @@
        HERO
        ──────────────────────────────────────── */
     .hero {
-      position: sticky;   /* pins while WE ARE slides up over it */
-      top: 0;
+      position: relative;
       z-index: 1;
       width: 100%; height: 100vh; min-height: 600px;
       display: flex; flex-direction: column;
@@ -170,30 +173,15 @@
       overflow: hidden;
     }
 
-    /* ── Lottie Background ── */
-    #lottie-bg {
-      position: fixed;   /* stays in viewport so next section can blur it */
-      top: 44%;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      max-height: 44vh;
+    /* ── Unique Canvas Background ── */
+    #hero-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100vh;
       z-index: 0;
-      opacity: 0;
-      transition: opacity 1.8s ease;
-    }
-
-    #lottie-bg svg {
-      width: 100% !important;
-      height: 100% !important;
-      display: block;
-      mix-blend-mode: screen;
-      /*
-        saturate(3): pure gray stays gray (0 chroma → nothing to boost),
-        but red [1,0.14,0.18] becomes hyper-vivid — makes the balls pop.
-        brightness(1.5): lifts everything slightly so gray shapes glow.
-      */
-      filter: brightness(1.1) saturate(1.3) contrast(1.05);
+      opacity: 0.7;
+      pointer-events: none; /* Let clicks pass through */
     }
 
     /* ── Gradient overlay — keeps text readable ── */
@@ -225,7 +213,7 @@
       color: var(--ash);
       margin-bottom: 28px;
       opacity: 0; transform: translateY(14px);
-      transition: opacity .8s ease .1s, transform .8s var(--ease-expo) .1s;
+      transition: opacity .4s ease .05s, transform .4s var(--ease-expo) .05s;
     }
     .hero-label.visible { opacity: 1; transform: translateY(0); }
 
@@ -240,7 +228,7 @@
       flex-wrap: wrap; justify-content: center;
       line-height: .9;
       opacity: 0; transform: translateY(22px);
-      transition: opacity .9s ease, transform .9s var(--ease-expo);
+      transition: opacity .4s ease, transform .4s var(--ease-expo);
     }
     .headline-row.visible { opacity: 1; transform: translateY(0); }
 
@@ -322,7 +310,7 @@
     }
     .hero-enter.visible {
       opacity: 1;
-      transition: color .3s ease, opacity .9s ease 1.2s;
+      transition: color .3s ease, opacity .4s ease .4s;
     }
     .hero-enter:hover { color: var(--bone); }
 
@@ -347,8 +335,8 @@
         touch-action: pan-y;
       }
 
-      /* Clip lottie shapes that animate outside the fixed container */
-      #lottie-bg { overflow: hidden; }
+      /* Canvas takes full screen */
+      #hero-canvas { overflow: hidden; }
 
       /* Cards-sticky is overflow:visible on desktop (cards float outside).
          On mobile clip them so they don't extend beyond viewport width. */
@@ -389,23 +377,23 @@
 
       /* ── Hero ── */
       .hero { min-height: 100svh; }
-      .hero-content { padding: 0 10px !important; width: 100%; max-width: 100%; }
-      .hero-headline { width: 100%; }
+      .hero-content { padding: 0 16px !important; width: 100%; max-width: 100%; text-align: center; }
+      .hero-headline { width: 100%; align-items: center; }
       .headline-row {
         gap: 8px;
         width: 100%;
         justify-content: center;
         flex-wrap: wrap;
       }
-      /* Scale down all headline text to fit narrow viewports */
+      /* Scale up headline text for mobile */
       .hl-caps  {
-        font-size: clamp(22px, 6vw, 56px);
-        letter-spacing: -0.04em;
+        font-size: clamp(32px, 8vw, 64px);
+        letter-spacing: -0.03em;
         white-space: normal;
         max-width: 100%;
       }
-      .hl-serif { font-size: clamp(14px, 3.5vw, 30px); }
-      .accent-dot { width: 9px; height: 9px; margin-left: 3px; }
+      .hl-serif { font-size: clamp(20px, 4vw, 36px); }
+      .accent-dot { width: 12px; height: 12px; margin-left: 4px; }
 
       /* ── WE ARE — shrink so "WE a re" fits in viewport ── */
       .we-section  { min-height: 220vh; }
@@ -441,9 +429,9 @@
 
     /* Extra tight at phone width */
     @media (max-width: 480px) {
-      .hl-caps  { font-size: clamp(18px, 5.5vw, 40px); }
-      .hl-serif { font-size: clamp(12px, 3vw, 24px); }
-      .headline-row { gap: 5px; }
+      .hl-caps  { font-size: clamp(36px, 12vw, 48px); line-height: 0.9; }
+      .hl-serif { font-size: clamp(22px, 7vw, 30px); }
+      .headline-row { gap: 8px; margin-bottom: 6px; }
 
       .we-bold  { font-size: clamp(26px, 8vw, 80px); }
       .we-swash { font-size: clamp(38px, 12vw, 130px); }
@@ -462,67 +450,122 @@
     .we-section {
       position: relative;
       z-index: 110;
-      width: 100%;
-      min-height: 300vh;
-      background: #939393;
-    }
-
-    /* sticky inner frame — stays in view while section scrolls */
-    .we-sticky {
-      position: sticky;
-      top: 0;
-      height: 100vh;
+      min-height: 100dvh;
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
+      background: var(--void);
+      scroll-snap-align: start;
     }
 
-    #we-blackout {
-      position: absolute;
-      inset: 0;
-      background: #000;
+    .we-text-container {
+      perspective: 1000px;
+    }
+
+    .we-title {
+      font-size: clamp(40px, 12vw, 160px);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: -0.04em;
+      line-height: 0.9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: var(--bone);
+      transform-style: preserve-3d;
+    }
+
+    .we-word {
+      display: inline-block;
+      transform: rotateX(90deg) translateY(100px);
       opacity: 0;
-      pointer-events: none;
-      z-index: 5;
+      transition: transform 1s var(--ease-expo), opacity 1s var(--ease-expo);
+      transition-delay: 0s !important; /* Instant hide on scroll out */
+      transform-origin: bottom center;
+    }
+    .we-word.lowercase {
+      text-transform: lowercase;
+    }
+    .we-word.accent {
+      color: #3df59a;
+      text-shadow: 0 0 40px rgba(61, 245, 154, 0.4);
+      text-transform: lowercase;
+    }
+    
+    .we-section.is-visible .we-word {
+      transform: rotateX(0deg) translateY(0);
+      opacity: 1;
+    }
+    .we-section.is-visible .we-word:nth-child(1) { transition-delay: 0.1s !important; }
+    .we-section.is-visible .we-word:nth-child(2) { transition-delay: 0.3s !important; }
+
+    .terminal-header {
+      background: rgba(20, 20, 20, 1);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .terminal-header .dot {
+      width: 12px; height: 12px; border-radius: 50%; margin-right: 8px;
+    }
+    .dot.red { background: #ff5f56; }
+    .dot.yellow { background: #ffbd2e; }
+    .dot.green { background: #27c93f; }
+    
+    .terminal-title {
+      margin-left: 12px; font-size: 13px; color: #666; letter-spacing: 0.05em;
     }
 
-    .we-headline {
+    .terminal-body {
+      padding: 60px 40px;
+      font-size: clamp(20px, 4vw, 42px);
+      color: var(--bone);
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .terminal-line {
       display: flex;
       align-items: baseline;
-      justify-content: center;
-      gap: 4vw;
-      width: 100%;
-      padding: 0 4vw;
-      transform-origin: center center;
-      will-change: transform;
     }
 
-    .we-bold {
-      flex: 0 0 auto;
+    .terminal-prompt { color: #3df59a; margin-right: 16px; font-weight: bold; }
+    
+    .terminal-cursor {
+      display: inline-block;
+      width: 0.6em;
+      height: 1.1em;
+      background: #3df59a;
+      vertical-align: text-bottom;
+      margin-left: 6px;
+      animation: blink 1s step-end infinite;
+    }
+    
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .terminal-text {
       font-family: var(--font);
       font-weight: 700;
-      font-size: clamp(72px, 20vw, 300px);
-      letter-spacing: -0.05em;
-      text-transform: uppercase;
-      color: #080808;
-      line-height: 1;
+      letter-spacing: -0.02em;
     }
 
-    /* Pull RE closer to the 'a' */
-    .we-swash + .we-bold { margin-left: -2vw; }
+    .terminal-glitch {
+      color: #3df59a;
+      text-shadow: 2px 0 red, -2px 0 blue;
+      animation: glitch 0.2s linear infinite;
+    }
 
-    /* Cormorant (optical size 120) italic at max weight gives the dramatic
-       calligraphic swash 'a' with extreme thick-thin contrast + sweeping loop */
-    .we-swash {
-      flex: 0 0 auto;
-      font-family: 'Cormorant', Georgia, serif;
-      font-weight: 700;
-      font-style: italic;
-      font-optical-sizing: auto;
-      font-size: clamp(110px, 31vw, 460px);
-      color: #080808;
-      line-height: 1;
+    @keyframes glitch {
+      0% { transform: translate(0) }
+      20% { transform: translate(-2px, 1px) }
+      40% { transform: translate(-1px, -1px) }
+      60% { transform: translate(2px, 1px) }
+      80% { transform: translate(1px, -1px) }
+      100% { transform: translate(0) }
     }
 
     /* ────────────────────────────────────────
@@ -531,41 +574,105 @@
     .manifesto-section {
       position: relative;
       z-index: 120;
-      background: #000;
-      min-height: 300vh;
-    }
-
-    .manifesto-sticky {
-      position: sticky;
-      top: 0;
-      height: 100vh;
+      background: var(--void);
+      min-height: 100dvh;
       display: flex;
       align-items: center;
-      opacity: 0;
+      scroll-snap-align: start;
+      padding: 100px 0;
     }
 
     .manifesto-inner {
-      padding: 0 22vw;
+      padding: 0 5vw;
       width: 100%;
+      perspective: 1200px;
     }
 
     .manifesto-text {
       font-family: var(--font);
       font-weight: 700;
-      font-size: clamp(13px, 1.7vw, 30px);
-      letter-spacing: 0.06em;
+      font-size: clamp(12px, 2.8vw, 36px);
+      letter-spacing: -0.01em;
       text-transform: uppercase;
-      color: rgba(210, 208, 208, 0.8);
-      line-height: 1.55;
-      text-align: justify;
+      line-height: 1.35;
+      text-align: left;
+      color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .m-sentence {
+      opacity: 0;
+      filter: blur(12px);
+      transition: opacity 0.3s ease, filter 0.3s ease;
+      transition-delay: 0s !important;
+    }
+    
+    .manifesto-accent {
+      color: #3df59a;
+      text-shadow: 0 0 20px rgba(61, 245, 154, 0.3);
+      transition: color 0.3s ease, text-shadow 0.3s ease;
+      cursor: crosshair;
+    }
+    .manifesto-accent:hover {
+      color: #fff;
+      text-shadow: 0 0 30px rgba(61, 245, 154, 0.8), 0 0 60px rgba(61, 245, 154, 0.4);
+    }
+    
+    .manifesto-marquee {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+      white-space: nowrap;
+      font-family: var(--font);
+      font-size: clamp(80px, 15vw, 250px);
+      font-weight: 800;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(255, 255, 255, 0.04);
+      z-index: 0;
+      pointer-events: none;
+      animation: scrollMarquee 50s linear infinite;
+    }
+    @keyframes scrollMarquee {
+      0% { transform: translate(0, -50%); }
+      100% { transform: translate(-50%, -50%); }
+    }
+    
+    .m-particle {
+      position: absolute;
+      font-family: monospace;
+      color: rgba(61, 245, 154, 0.3);
+      z-index: 1;
+      pointer-events: none;
+      animation: floatParticle 10s ease-in-out infinite alternate;
+      opacity: 0;
+      transition: opacity 2s ease;
+    }
+    .manifesto-section.is-visible .m-particle { opacity: 1; }
+    
+    .p1 { top: 15%; left: 8%; font-size: 24px; animation-duration: 8s; }
+    .p2 { top: 80%; left: 12%; font-size: 16px; animation-duration: 12s; animation-delay: -2s; }
+    .p3 { top: 20%; right: 10%; font-size: 28px; animation-duration: 14s; animation-delay: -5s; }
+    .p4 { top: 75%; right: 8%; font-size: 20px; animation-duration: 9s; animation-delay: -3s; }
+    .p5 { top: 50%; left: 3%; font-size: 32px; animation-duration: 15s; animation-delay: -7s; color: rgba(61,245,154,0.1); }
+    .p6 { top: 60%; right: 15%; font-size: 18px; animation-duration: 11s; animation-delay: -1s; }
+
+    @keyframes floatParticle {
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(-40px) rotate(20deg); }
     }
 
-    .manifesto-accent {
-      color: var(--red);
-      display: inline-block;
-      white-space: nowrap;
-      position: relative;
+    .manifesto-section.is-visible .m-sentence {
+      opacity: 1;
+      filter: blur(0px);
     }
+    
+    .manifesto-section.is-visible .m-sentence:nth-child(1) { transition-delay: 0.05s !important; }
+    .manifesto-section.is-visible .m-sentence:nth-child(2) { transition-delay: 0.10s !important; }
+    .manifesto-section.is-visible .m-sentence:nth-child(3) { transition-delay: 0.15s !important; }
+    .manifesto-section.is-visible .m-sentence:nth-child(4) { transition-delay: 0.20s !important; }
+    .manifesto-section.is-visible .m-sentence:nth-child(5) { transition-delay: 0.25s !important; }
+    .manifesto-section.is-visible .m-sentence:nth-child(6) { transition-delay: 0.30s !important; }
+    .manifesto-section.is-visible .m-sentence:nth-child(7) { transition-delay: 0.35s !important; }
 
     /* ────────────────────────────────────────
        CLOSING CTA SECTION
@@ -574,12 +681,19 @@
       position: relative;
       z-index: 150;
       background: #000;
-      padding: 180px 0 140px;
+      min-height: 100dvh;
+      padding-top: 100px;
+      padding-bottom: 200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       text-align: center;
       overflow: hidden;
+      scroll-snap-align: start;
     }
 
-    /* subtle red glow behind the text */
+    /* subtle green glow behind the text */
     .closing-section::before {
       content: '';
       position: absolute;
@@ -588,7 +702,7 @@
       transform: translate(-50%, -50%);
       width: 60vw;
       height: 60vh;
-      background: radial-gradient(ellipse at center, rgba(254,30,52,0.08) 0%, transparent 70%);
+      background: radial-gradient(ellipse at center, rgba(61, 245, 154, 0.08) 0%, transparent 70%);
       pointer-events: none;
     }
 
@@ -601,18 +715,25 @@
       color: rgba(255,255,255,0.28);
       margin-bottom: 44px;
       display: block;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s var(--ease-expo), transform 0.8s var(--ease-expo);
     }
 
     .closing-headline {
       font-family: var(--font);
       font-weight: 700;
-      font-size: clamp(48px, 9vw, 136px);
+      font-size: clamp(32px, 8vw, 136px);
       letter-spacing: -0.045em;
       text-transform: uppercase;
       color: var(--bone);
       line-height: 0.90;
       margin-bottom: 60px;
       position: relative;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s var(--ease-expo), transform 0.8s var(--ease-expo);
+      transition-delay: 0s !important; /* Instant hide */
     }
 
     .closing-headline .ch-serif {
@@ -624,9 +745,15 @@
       letter-spacing: -0.02em;
     }
 
-    .closing-headline .ch-red {
-      color: var(--red);
+    .closing-headline .ch-accent {
+      color: #3df59a;
+      text-shadow: 0 0 20px rgba(61, 245, 154, 0.3);
     }
+
+    .closing-section.is-visible .closing-eyebrow { opacity: 1; transform: translateY(0); transition-delay: 0.1s !important; }
+    .closing-section.is-visible .closing-headline { opacity: 1; transform: translateY(0); transition-delay: 0.2s !important; }
+    .closing-section.is-visible .closing-cta-btn { opacity: 1; transform: translateY(0); transition-delay: 0.3s !important; }
+
 
     .closing-cta-btn {
       display: inline-flex;
@@ -643,7 +770,10 @@
       color: var(--bone);
       position: relative;
       overflow: hidden;
-      transition: border-color 0.3s ease, color 0.3s ease;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s var(--ease-expo), transform 0.8s var(--ease-expo), border-color 0.3s ease, color 0.3s ease;
+      transition-delay: 0s !important;
     }
 
     .closing-cta-btn::before {
@@ -665,11 +795,14 @@
        FOOTER — minimal single-bar
        ──────────────────────────────────────── */
     .site-footer {
-      position: relative;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
       z-index: 151;
-      background: #050505;
+      background: transparent;
       border-top: 1px solid rgba(255,255,255,0.06);
-      padding: 32px 24px;
+      padding: 32px 48px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -716,7 +849,7 @@
        NAVIGATION
        ───────────────────────────────── -->
   <nav id="navbar">
-    <a href="index.html" class="nav-logo">
+    <a href="home.html" class="nav-logo">
       <img src="logo with bg.png" alt="zdevs" class="nav-logo-img">
     </a>
 
@@ -726,7 +859,7 @@
     </button>
     <ul class="nav-links" id="navLinks">
       <li><a href="#" data-original="HOME" data-scroll="top">HOME</a></li>
-      <li><a href="#" data-original="WHO ARE WE" data-scroll="manifesto">WHO ARE WE</a></li>
+      <li><a href="#" data-original="WHO ARE WE" data-scroll="we-are">WHO ARE WE</a></li>
       <li><a href="services.html" data-original="SERVICES">SERVICES</a></li>
       <li><a href="pricing.html" data-original="PRICING">PRICING</a></li>
       <li><a href="contact.html" data-original="CONTACT">CONTACT</a></li>
@@ -745,12 +878,10 @@
   <section class="hero" id="hero">
 
     <!--
-      LOTTIE BACKGROUND
-      lottie-web renders the JSON as an inline SVG.
-      mix-blend-mode: screen lets red circles glow through the void
-      while the near-black shapes create subtle geometric texture.
+      UNIQUE CANVAS BACKGROUND
+      Interactive particle constellation
     -->
-    <div id="lottie-bg" aria-hidden="true"></div>
+    <canvas id="hero-canvas" aria-hidden="true"></canvas>
 
     <!-- Gradient overlay — keeps headline readable -->
     <div class="hero-overlay"></div>
@@ -792,13 +923,11 @@
        WE ARE — second section
        ───────────────────────────────── -->
   <section class="we-section" id="we-are">
-    <div class="we-sticky">
-      <div class="we-headline">
-        <span class="we-bold">WE</span>
-        <span class="we-swash">a</span>
-        <span class="we-bold">re</span>
-      </div>
-      <div id="we-blackout"></div>
+    <div class="we-text-container" id="weTextContainer">
+      <h2 class="we-title">
+        <span class="we-word lowercase">we are</span>
+        <span class="we-word accent">zdevs</span>
+      </h2>
     </div>
   </section>
 
@@ -806,13 +935,31 @@
        MANIFESTO — paragraph after zoom-to-black
        ───────────────────────────────── -->
   <section class="manifesto-section" id="manifesto">
-    <div class="manifesto-sticky">
+    
+    <!-- Background Marquee -->
+    <div class="manifesto-marquee">
+      TECHNOLOGY MEETS AMBITION &nbsp;&nbsp;&nbsp; ZDEVS STUDIO &nbsp;&nbsp;&nbsp; TECHNOLOGY MEETS AMBITION &nbsp;&nbsp;&nbsp; ZDEVS STUDIO &nbsp;&nbsp;&nbsp; 
+    </div>
+
+    <!-- Floating Digital Particles -->
+    <div class="m-particle p1">&lt;</div>
+    <div class="m-particle p2">&gt;</div>
+    <div class="m-particle p3">[]</div>
+    <div class="m-particle p4">/</div>
+    <div class="m-particle p5">{ }</div>
+    <div class="m-particle p6">_</div>
+
     <div class="manifesto-inner">
-      <p class="manifesto-text">WE ARE A BOUTIQUE DIGITAL STUDIO WHERE TECHNOLOGY MEETS AMBITION. <span class="manifesto-accent">AI AUTOMATION</span> IS OUR COMPASS, SETTING A COURSE THAT DRIVES EVERY DECISION WITH INTELLIGENCE AND SPEED. WE DEPLOY <span class="manifesto-accent">AI AGENTS</span> WITH PURPOSE, CRAFTING AUTONOMOUS SYSTEMS THAT THINK, ADAPT, AND SCALE WITHOUT LIMITS. <span class="manifesto-accent">3D WEBSITES</span> ARE OUR CANVAS, BREATHING LIFE INTO EVERY PIXEL AND SHAPING IMMERSIVE EXPERIENCES THAT CAPTIVATE. THROUGH RELENTLESS <span class="manifesto-accent">PERFORMANCE MARKETING</span>, WE TURN IDEAS INTO MEASURABLE, COMPOUNDING GROWTH. OUR <span class="manifesto-accent">AI SOLUTIONS</span> CAPTURE INSIGHT AND MOMENTUM, AUTOMATING WORKFLOWS THAT STIR RESULTS AND CONNECT BRANDS TO THEIR FUTURE. WE FOSTER LASTING <span class="manifesto-accent">GROWTH</span>, EMPOWERING BUSINESSES TO AUTOMATE, OPTIMIZE, AND THRIVE AT SCALE.</p>
+      <p class="manifesto-text">
+        <span class="m-sentence">WE ARE A BOUTIQUE DIGITAL STUDIO WHERE TECHNOLOGY MEETS AMBITION. </span>
+        <span class="m-sentence"><span class="manifesto-accent">AI AUTOMATION</span> IS OUR COMPASS, SETTING A COURSE THAT DRIVES EVERY DECISION WITH INTELLIGENCE AND SPEED. </span>
+        <span class="m-sentence">WE DEPLOY <span class="manifesto-accent">AI AGENTS</span> WITH PURPOSE, CRAFTING AUTONOMOUS SYSTEMS THAT THINK, ADAPT, AND SCALE WITHOUT LIMITS. </span>
+        <span class="m-sentence"><span class="manifesto-accent">3D WEBSITES</span> ARE OUR CANVAS, BREATHING LIFE INTO EVERY PIXEL AND SHAPING IMMERSIVE EXPERIENCES THAT CAPTIVATE. </span>
+        <span class="m-sentence">THROUGH RELENTLESS <span class="manifesto-accent">PERFORMANCE MARKETING</span>, WE TURN IDEAS INTO MEASURABLE, COMPOUNDING GROWTH. </span>
+        <span class="m-sentence">OUR AI SOLUTIONS CAPTURE INSIGHT AND MOMENTUM, AUTOMATING WORKFLOWS THAT STIR RESULTS AND CONNECT BRANDS TO THEIR FUTURE. </span>
+        <span class="m-sentence">WE FOSTER LASTING GROWTH, EMPOWERING BUSINESSES TO AUTOMATE, OPTIMIZE, AND THRIVE AT SCALE.</span>
+      </p>
     </div>
-    </div>
-    <!-- Anchor: land here = manifesto text fully visible (12% through scroll) -->
-    <div id="manifesto-done" style="position:absolute; top:8%; left:0; height:1px; width:1px; pointer-events:none;"></div>
   </section>
 
   <!-- ─────────────────────────────────
@@ -822,172 +969,144 @@
     <span class="closing-eyebrow">zdevs studio &nbsp;·&nbsp; let's build together</span>
     <h2 class="closing-headline">
       READY TO BUILD<br>
-      <span class="ch-serif">your</span> <span class="ch-red">FUTURE</span>?
+      <span class="ch-serif">your</span> <span class="ch-accent">FUTURE</span>?
     </h2>
     <a href="contact.html" class="closing-cta-btn">
       <span>BOOK AN INQUIRY</span>
       <span>↗</span>
     </a>
+
+    <!-- ─────────────────────────────────
+         FOOTER — minimal bar
+         ───────────────────────────────── -->
+    <footer class="site-footer">
+      <a href="home.html" class="nav-logo">
+        <img src="logo with bg.png" alt="zdevs" class="nav-logo-img">
+      </a>
+
+      <div class="footer-nav">
+        <a href="#we-are">Who Are We</a>
+        <a href="services.html" id="footerServices">Services</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="contact.html">Contact</a>
+      </div>
+
+      <p class="footer-copy">© 2026 zdevs</p>
+    </footer>
   </section>
-
-  <!-- ─────────────────────────────────
-       FOOTER — minimal bar
-       ───────────────────────────────── -->
-  <footer class="site-footer">
-    <a href="index.html" class="nav-logo">
-      <img src="logo with bg.png" alt="zdevs" class="nav-logo-img">
-    </a>
-
-    <div class="footer-nav">
-      <a href="services.html" id="footerServices">Services</a>
-      <a href="pricing.html">Pricing</a>
-      <a href="contact.html">Contact</a>
-    </div>
-
-    <p class="footer-copy">© 2026 zdevs</p>
-  </footer>
 
   <!-- ─────────────────────────────────
        SCRIPTS
        ───────────────────────────────── -->
 
-  <!--
-    lottie-data.js embeds the animation JSON as a JS variable (LOTTIE_DATA).
-    This sidesteps the file:// CORS block that stops XHR-based `path:` loading
-    when you open index.html directly from your filesystem without a server.
-  -->
-  <script src="lottie-data.js"></script>
+  <!-- Custom Hero Animation JS -->
 
   <script>
     /* ══════════════════════════════════════
-       LOTTIE BACKGROUND
-       animationData: avoids file:// XHR block
-       autoplay · loop · SVG renderer · responsive
+       UNIQUE CANVAS BACKGROUND (PARTICLE NETWORK)
        ══════════════════════════════════════ */
-    const lottieContainer = document.getElementById('lottie-bg');
+    const canvas = document.getElementById('hero-canvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    let particles = [];
+    let numParticles = 120;
+    let connectionDistance = 160;
+    
+    // Mouse tracking for interactivity
+    let mouse = { x: -1000, y: -1000, radius: 180 };
 
-    let heroAnim = null;
-    try {
-      heroAnim = lottie.loadAnimation({
-        container:  lottieContainer,
-        renderer:   'svg',
-        loop:       true,
-        autoplay:   true,
-        animationData: LOTTIE_DATA,   // ← inline JSON, no XHR needed
-        rendererSettings: {
-          preserveAspectRatio: 'xMidYMid slice',
-          progressiveLoad:     false,
-          hideOnTransparent:   true,
-        }
-      });
+    function initCanvas() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      
+      // Balance chaos and coverage on mobile screens
+      let speedMult = 1.5;
+      if (width < 768) {
+        numParticles = 75;
+        connectionDistance = 125;
+        speedMult = 0.8; // A little faster
+      } else {
+        numParticles = 120;
+        connectionDistance = 160;
+      }
 
-      /* Speed: 0.75× — faster than before */
-      heroAnim.setSpeed(0.75);
-
-      /* ── After Lottie renders its first frame ── */
-      heroAnim.addEventListener('DOMLoaded', () => {
-        lottieContainer.style.opacity = '0.38';
-
-        const svgEl = lottieContainer.querySelector('svg');
-        if (!svgEl) return;
-
-        /*
-          SUB-LETTER PRECISION HIGHLIGHT — clip-path circle approach
-          ────────────────────────────────────────────────────────────
-          Instead of toggling classes on individual characters, we:
-            1. Clone the entire headline into #teal-headline (teal-coloured duplicate)
-            2. Every rAF frame, find the largest salmon ball's bounding circle
-            3. Apply clip-path: circle(R at X Y) on the teal duplicate,
-               translated into the teal div's local coordinate space
-
-          Result: ONLY the exact sub-letter pixels inside the ball's circle
-          turn teal — pixel-perfect match to the SVZ reference.
-        */
-
-        /* ── Build the #teal-headline overlay ── */
-        const heroHeadline = document.querySelector('.hero-headline');
-        const tealEl = document.createElement('div');
-        tealEl.id = 'teal-headline';
-
-        /* Clone each .headline-row; strip IDs to avoid duplicates in DOM */
-        const clonedRows = [];
-        heroHeadline.querySelectorAll('.headline-row').forEach(row => {
-          const clone = row.cloneNode(true);
-          clone.removeAttribute('id');
-          clonedRows.push(clone);
-          tealEl.appendChild(clone);
+      particles = [];
+      for (let i = 0; i < numParticles; i++) {
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * speedMult,
+          vy: (Math.random() - 0.5) * speedMult,
+          size: Math.random() * 2 + 0.5,
+          color: Math.random() > 0.8 ? '#3df59a' : '#d4d2d2' // Mix of logo color and ash/bone
         });
-        heroHeadline.appendChild(tealEl);
-
-        /*
-          Animate teal rows in sync with the entrance animation so they stay
-          at the same transform/opacity as the originals at all times.
-          The entrance animation delays match those set in the setTimeout block below.
-        */
-        const tealRowDelays = [380, 520, 640];
-        clonedRows.forEach((row, i) => {
-          setTimeout(() => row.classList.add('visible'), tealRowDelays[i]);
-        });
-
-        /*
-          Detect salmon SVG elements.
-          Salmon [1,0.44,0.41] → rgb(255,112,105) — R≈255, G≈112.
-          Use the regex that was proven to work in the earlier per-char approach,
-          extended to also check el.style.fill (direct DOM property Lottie sets).
-        */
-        function isRedEl(el) {
-          const s = (el.getAttribute('style') || '') +
-                    (el.getAttribute('fill')  || '') +
-                    (el.style.fill            || '');
-          /* rgb(254|255, 100-119, …) — handles both comma and space separators */
-          return /rgb\(25[4-5][,\s]+1[01]\d/.test(s);
-        }
-
-        function tick() {
-          /* Collect all salmon-coloured SVG element rects */
-          const redRects = [];
-          svgEl.querySelectorAll('path, ellipse, circle, rect').forEach(el => {
-            if (!isRedEl(el)) return;
-            const r = el.getBoundingClientRect();
-            if (r.width > 0 || r.height > 0) redRects.push(r);
-          });
-
-          const hr = heroHeadline.getBoundingClientRect();
-
-          /*
-            Pick the red rect with the MOST OVERLAP with the headline.
-            This way the balls (when over the text) win over the bar
-            (when it's elsewhere), and if NOTHING overlaps the text,
-            the clip-path stays hidden — no false highlights.
-          */
-          let bestRect = null, bestOverlap = -1;
-          redRects.forEach(r => {
-            const ow = Math.max(0, Math.min(r.right,  hr.right)  - Math.max(r.left, hr.left));
-            const oh = Math.max(0, Math.min(r.bottom, hr.bottom) - Math.max(r.top,  hr.top));
-            const overlap = ow * oh;
-            if (overlap > bestOverlap) { bestOverlap = overlap; bestRect = r; }
-          });
-
-          if (bestRect && bestOverlap > 0) {
-            /* Only reveal teal overlay when the shape actually touches the text */
-            const bCx = bestRect.left + bestRect.width  / 2;
-            const bCy = bestRect.top  + bestRect.height / 2;
-            const bR  = Math.min(bestRect.width, bestRect.height) / 2;
-            tealEl.style.clipPath =
-              `circle(${bR}px at ${bCx - hr.left}px ${bCy - hr.top}px)`;
-          } else {
-            tealEl.style.clipPath = 'circle(0px at -9999px -9999px)';
-          }
-
-          requestAnimationFrame(tick);
-        }
-        tick();
-      });
-
-      window.addEventListener('resize', () => heroAnim.resize(), { passive: true });
-    } catch (err) {
-      console.warn('Lottie init failed:', err);
+      }
     }
+
+    function drawNetwork() {
+      ctx.clearRect(0, 0, width, height);
+      
+      // Update and draw particles
+      for (let i = 0; i < particles.length; i++) {
+        let p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        
+        // Bounce off edges
+        if (p.x < 0 || p.x > width) p.vx *= -1;
+        if (p.y < 0 || p.y > height) p.vy *= -1;
+        
+        // Interactive mouse repulsion
+        let dx = p.x - mouse.x;
+        let dy = p.y - mouse.y;
+        let distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < mouse.radius) {
+          let force = (mouse.radius - distance) / mouse.radius;
+          p.x += (dx / distance) * force * 5;
+          p.y += (dy / distance) * force * 5;
+        }
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+        
+        // Draw connections
+        for (let j = i + 1; j < particles.length; j++) {
+          let p2 = particles[j];
+          let dx2 = p.x - p2.x;
+          let dy2 = p.y - p2.y;
+          let dist2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
+          
+          if (dist2 < connectionDistance) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p2.x, p2.y);
+            let opacity = 1 - (dist2 / connectionDistance);
+            ctx.strokeStyle = p.color === '#3df59a' || p2.color === '#3df59a' 
+              ? `rgba(61, 245, 154, ${opacity * 0.85})` 
+              : `rgba(212, 210, 210, ${opacity * 0.45})`;
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+          }
+        }
+      }
+      
+      requestAnimationFrame(drawNetwork);
+    }
+
+    initCanvas();
+    drawNetwork();
+    
+    window.addEventListener('resize', initCanvas);
+    document.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+    document.addEventListener('mouseleave', () => {
+      mouse.x = -1000;
+      mouse.y = -1000;
+    });
 
 
     /* ══════════════════════════════════════
@@ -1012,51 +1131,12 @@
     });
 
 
-    /* ══════════════════════════════════════
-       NAV SCRAMBLE TEXT EFFECT
-       Letters cycle fast → settle back into original word
-       ══════════════════════════════════════ */
-    const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%·—';
 
-    function scramble(el, original) {
-      const len = original.length;
-      let frame = 0;
-      const totalFrames = len * 4; // lower = faster scramble
-      let raf;
-
-      function tick() {
-        const progress = frame / totalFrames;
-        el.textContent = original
-          .split('')
-          .map((ch, i) => {
-            if (ch === ' ') return ' ';
-            if (i / len < progress) return original[i]; // reveal L→R
-            return CHARS[Math.floor(Math.random() * CHARS.length)];
-          })
-          .join('');
-
-        frame++;
-        if (frame <= totalFrames) {
-          raf = requestAnimationFrame(tick);
-        } else {
-          el.textContent = original;
-        }
-      }
-
-      raf = requestAnimationFrame(tick);
-      return () => cancelAnimationFrame(raf);
-    }
-
-    /* Scramble all nav links once on page load, staggered */
-    document.querySelectorAll('.nav-links a').forEach((link, idx) => {
-      const original = link.getAttribute('data-original');
-      if (original) setTimeout(() => scramble(link, original), 300 + idx * 120);
-    });
 
     document.querySelectorAll('.nav-links a').forEach(link => {
       const original = link.getAttribute('data-original');
 
-      /* Smooth scroll to end of section (where animation finishes) */
+      /* Smooth scroll using modern scrollIntoView */
       const target = link.getAttribute('data-scroll');
       if (target) {
         link.addEventListener('click', e => {
@@ -1066,9 +1146,7 @@
           } else {
             const el = document.getElementById(target);
             if (el) {
-              const range = el.offsetHeight - window.innerHeight;
-              const fraction = target === 'manifesto' ? 0.12 : 1;
-              window.scrollTo({ top: el.offsetTop + range * fraction, behavior: 'smooth' });
+              el.scrollIntoView({ behavior: 'smooth' });
             }
           }
         });
@@ -1110,11 +1188,11 @@
        Staggered fade-up on page load
        ══════════════════════════════════════ */
     [
-      { id: 'heroLabel',  delay: 200 },
-      { id: 'row1',       delay: 380 },
-      { id: 'row2',       delay: 520 },
-      { id: 'row3',       delay: 640 },
-      { id: 'heroEnter',  delay: 860 },
+      { id: 'heroLabel',  delay: 50 },
+      { id: 'row1',       delay: 150 },
+      { id: 'row2',       delay: 250 },
+      { id: 'row3',       delay: 350 },
+      { id: 'heroEnter',  delay: 450 },
     ].forEach(({ id, delay }) => {
       const el = document.getElementById(id);
       if (el) setTimeout(() => el.classList.add('visible'), delay);
@@ -1133,156 +1211,27 @@
     }, { passive: true });
 
     /* ══════════════════════════════════════
-       WE ARE — SCROLL ZOOM TO BLACK
-       As user scrolls through the 300vh section,
-       the headline scales up until letters fill
-       the entire viewport → pure black screen.
+       3D SCROLL SNAP ANIMATIONS
        ══════════════════════════════════════ */
     (function () {
-      const weSection  = document.getElementById('we-are');
-      const weHeadline = weSection.querySelector('.we-headline');
-      const weBlackout = document.getElementById('we-blackout');
-
-      /* Shared animation: applies transform based on 0→1 progress */
-      function applyAnim(progress) {
-        const scale = 1 + progress * 8;
-        weHeadline.style.transform = `scale(${scale})`;
-        const blackProgress = Math.max(0, (progress - 0.7) / 0.3);
-        weBlackout.style.opacity = blackProgress;
-      }
-
-      /* ── Desktop: scroll event + getBoundingClientRect (original, unchanged) ── */
-      function onScroll() {
-        const rect        = weSection.getBoundingClientRect();
-        const sectionH    = weSection.offsetHeight;
-        const vh          = window.innerHeight;
-        const scrolled    = Math.max(0, -rect.top);
-        const scrollRange = sectionH - vh;
-        applyAnim(Math.min(1, scrolled / scrollRange));
-      }
-      window.addEventListener('scroll', onScroll, { passive: true });
-      onScroll();
-
-      /* ── Mobile: rAF loop with live window.scrollY ──
-         getBoundingClientRect() returns stale cached values during iOS
-         composited momentum scroll. window.scrollY is always live. */
-      if ('ontouchstart' in window) {
-        (function rafLoop() {
-          const sectionH = weSection.offsetHeight;
-          const vh       = window.innerHeight;
-          const scrolled = Math.max(0, window.scrollY - weSection.offsetTop);
-          applyAnim(Math.min(1, scrolled / (sectionH - vh)));
-          requestAnimationFrame(rafLoop);
-        })();
-      }
-    })();
-
-    /* ══════════════════════════════════════
-       MANIFESTO — Phase 1: fade in
-                   Phase 2: gray words fade
-                   Phase 3: red words glide to centre & stack
-       ══════════════════════════════════════ */
-    (function () {
-      const manifesto = document.getElementById('manifesto');
-      const stickyEl  = manifesto.querySelector('.manifesto-sticky');
-      const p         = manifesto.querySelector('.manifesto-text');
-
-      (function splitWords() {
-        const nodes = Array.from(p.childNodes);
-        p.innerHTML = '';
-        nodes.forEach(node => {
-          if (node.nodeType === Node.TEXT_NODE) {
-            node.textContent.split(/(\s+)/).forEach(chunk => {
-              if (!chunk) return;
-              if (/^\s+$/.test(chunk)) {
-                p.appendChild(document.createTextNode(chunk));
-              } else {
-                const s = document.createElement('span');
-                s.className = 'mword';
-                s.textContent = chunk;
-                p.appendChild(s);
-              }
-            });
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
           } else {
-            node.classList.add('mword-accent');
-            p.appendChild(node);
+            // Re-hide when scrolled away so it animates again
+            entry.target.classList.remove('is-visible'); 
           }
         });
-      })();
+      }, { threshold: 0.65 });
 
-      const grayWords = Array.from(p.querySelectorAll('.mword'));
-      const accentEls = Array.from(p.querySelectorAll('.mword-accent'));
-      let targets = null;
-
-      function computeTargets() {
-        const cRect   = stickyEl.getBoundingClientRect();
-        const svh     = stickyEl.offsetHeight;
-        const svw     = stickyEl.offsetWidth;
-        const spacing = Math.min(90, svh * 0.11);
-        const totalH  = (accentEls.length - 1) * spacing;
-        const startY  = svh / 2 - totalH / 2;
-
-        targets = accentEls.map((el, i) => {
-          el.style.transform = '';
-          const r    = el.getBoundingClientRect();
-          const curX = r.left + r.width  / 2 - cRect.left;
-          const curY = r.top  + r.height / 2 - cRect.top;
-          const tgtX = svw / 2;
-          const tgtY = startY + i * spacing;
-          return { dx: tgtX - curX, dy: tgtY - curY };
-        });
-      }
-
-      /* Shared animation: applies all 3 phases based on 0→1 progress */
-      function applyAnim(progress) {
-        /* Phase 1 (0–12%): fade in + slide up */
-        const phase1 = Math.max(0, Math.min(1, progress / 0.12));
-        const ease1  = phase1 * phase1 * (3 - 2 * phase1);
-        stickyEl.style.opacity = ease1;
-        p.style.transform = phase1 < 1 ? `translateY(${(1 - ease1) * 90}px)` : '';
-
-        /* Phase 2 (12–55%): gray words fade one by one */
-        const wordP = Math.max(0, (progress - 0.12) / 0.43);
-        grayWords.forEach((w, i) => {
-          const t    = i / grayWords.length;
-          const fade = Math.max(0, Math.min(1, (wordP - t) / (1.2 / grayWords.length)));
-          w.style.opacity = Math.max(0.04, 1 - fade * 0.96);
-        });
-
-        /* Phase 3 (55–85%): red words glide to centre and stack */
-        const moveP = Math.max(0, Math.min(1, (progress - 0.55) / 0.30));
-        if (moveP > 0 && !targets) computeTargets();
-        if (targets) {
-          const moveEase = moveP * moveP * (3 - 2 * moveP);
-          accentEls.forEach((el, i) => {
-            const { dx, dy } = targets[i];
-            el.style.transform       = `translate(${dx * moveEase}px, ${dy * moveEase}px)`;
-            el.style.transformOrigin = 'center center';
-          });
-        }
-      }
-
-      /* ── Desktop: scroll event + getBoundingClientRect (original, unchanged) ── */
-      function onScroll() {
-        const rect     = manifesto.getBoundingClientRect();
-        const sectionH = manifesto.offsetHeight;
-        const vh       = window.innerHeight;
-        const scrolled = Math.max(0, -rect.top);
-        applyAnim(Math.min(1, scrolled / (sectionH - vh)));
-      }
-      window.addEventListener('scroll', onScroll, { passive: true });
-      onScroll();
-
-      /* ── Mobile: rAF loop with live window.scrollY ── */
-      if ('ontouchstart' in window) {
-        (function rafLoop() {
-          const sectionH = manifesto.offsetHeight;
-          const vh       = window.innerHeight;
-          const scrolled = Math.max(0, window.scrollY - manifesto.offsetTop);
-          applyAnim(Math.min(1, scrolled / (sectionH - vh)));
-          requestAnimationFrame(rafLoop);
-        })();
-      }
+      const weSection = document.getElementById('we-are');
+      const manifesto = document.getElementById('manifesto');
+      const closing = document.getElementById('closing');
+      
+      if (weSection) observer.observe(weSection);
+      if (manifesto) observer.observe(manifesto);
+      if (closing) observer.observe(closing);
     })();
 
     /* ══════════════════════════════════════
@@ -1302,6 +1251,8 @@
         });
       });
     }
+
+
 
     </script>
 

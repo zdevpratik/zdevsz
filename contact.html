@@ -16,9 +16,20 @@
       --void:      #080808;
       --bone:      #fcfcfc;
       --ash:       #d4d2d2;
-      --red:       #fe1e34;
+      --green:     #3df59a;
       --font:      'Inter', ui-sans-serif, system-ui, sans-serif;
       --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.4;
+    }
+    .page-wrap, .site-footer {
+      position: relative;
+      z-index: 10;
     }
 
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -141,7 +152,19 @@
       font-size: 0.82em;
     }
 
-    .contact-headline .hl-red { color: var(--red); }
+    .contact-headline .hl-green { color: var(--green); text-shadow: 0 0 20px rgba(61, 245, 154, 0.3); }
+
+    /* ── Entrance Animations ── */
+    .anim-fold {
+      transform: rotateX(-90deg) translateY(-20px);
+      opacity: 0;
+      transition: transform 0.8s var(--ease-expo), opacity 0.8s var(--ease-expo);
+      transform-origin: top center;
+    }
+    .anim-fold.visible {
+      transform: rotateX(0deg) translateY(0);
+      opacity: 1;
+    }
 
     /* ── Two-column layout ── */
     .contact-body {
@@ -206,7 +229,7 @@
     }
 
     .info-promise span {
-      color: var(--red);
+      color: var(--green);
     }
 
     /* ── Form ── */
@@ -260,8 +283,9 @@
     .form-group input:focus,
     .form-group select:focus,
     .form-group textarea:focus {
-      border-color: rgba(254,30,52,0.5);
-      background: rgba(254,30,52,0.03);
+      border-color: rgba(61, 245, 154, 0.5);
+      background: rgba(61, 245, 154, 0.03);
+      box-shadow: 0 0 15px rgba(61, 245, 154, 0.1);
     }
 
     .form-group select option {
@@ -296,29 +320,34 @@
       align-items: center;
       gap: 12px;
       padding: 18px 40px;
-      background: var(--red);
-      border: 1px solid var(--red);
+      background: rgba(61, 245, 154, 0.1);
+      border: 1px solid var(--green);
       border-radius: 8px;
       font-family: var(--font);
       font-weight: 700;
       font-size: 10px;
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--bone);
+      color: var(--green);
       cursor: pointer;
       position: relative;
       overflow: hidden;
-      transition: background 0.3s ease, border-color 0.3s ease;
+      transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
     }
 
     .submit-btn::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: rgba(255,255,255,0.1);
+      background: var(--green);
       transform: scaleX(0);
       transform-origin: left;
       transition: transform 0.4s var(--ease-expo);
+    }
+    .submit-btn:hover {
+      box-shadow: 0 0 20px rgba(61, 245, 154, 0.4);
+      transform: translateY(-2px);
+      color: var(--void);
     }
     .submit-btn:hover::before { transform: scaleX(1); }
     .submit-btn span { position: relative; z-index: 1; }
@@ -394,17 +423,17 @@
 
   <div id="cursor"></div>
 
-  <!-- Nav -->
+  <canvas id="bg-canvas"></canvas>
   <nav>
-    <a href="index.html" class="nav-logo">
+    <a href="home.html" class="nav-logo">
       <img src="logo with bg.png" alt="zdevs" class="nav-logo-img">
     </a>
     <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menu">
       <div class="bar"></div><div class="bar"></div><div class="bar"></div>
     </button>
     <ul class="nav-links" id="navLinks">
-      <li><a href="index.html">HOME</a></li>
-      <li><a href="index.html#manifesto-done">WHO ARE WE</a></li>
+      <li><a href="home.html">HOME</a></li>
+      <li><a href="home.html#we-are">WHO ARE WE</a></li>
       <li><a href="services.html">SERVICES</a></li>
       <li><a href="pricing.html">PRICING</a></li>
       <li><a href="contact.html" class="active">CONTACT</a></li>
@@ -419,12 +448,12 @@
   <div class="page-wrap">
 
     <!-- Hero -->
-    <div class="contact-hero">
+    <div class="contact-hero anim-fold" id="heroBlock">
       <span class="contact-eyebrow">zdevs studio &nbsp;·&nbsp; get in touch</span>
       <h1 class="contact-headline">
         LET'S BUILD<br>
         <em>something</em><br>
-        <span class="hl-red">GREAT.</span>
+        <span class="hl-green">GREAT.</span>
       </h1>
     </div>
 
@@ -432,7 +461,7 @@
     <div class="contact-body">
 
       <!-- Left info -->
-      <div class="contact-info">
+      <div class="contact-info anim-fold" id="infoBlock" style="transition-delay: 0.15s">
         <p class="info-label">Contact details</p>
 
         <div class="info-block">
@@ -462,7 +491,7 @@
       </div>
 
       <!-- Right form -->
-      <div>
+      <div class="anim-fold" id="formBlock" style="transition-delay: 0.3s">
         <!-- Form (Formsubmit delivers to experi.exe@gmail.com) -->
         <form
           class="contact-form"
@@ -538,10 +567,11 @@
 
   <!-- Footer -->
   <footer class="site-footer">
-    <a href="index.html" class="nav-logo">
+    <a href="home.html" class="nav-logo">
       <img src="logo with bg.png" alt="zdevs" class="nav-logo-img">
     </a>
     <div class="footer-nav">
+      <a href="home.html#we-are">Who Are We</a>
       <a href="services.html">Services</a>
       <a href="pricing.html">Pricing</a>
       <a href="contact.html">Contact</a>
@@ -550,21 +580,105 @@
   </footer>
 
   <script>
-    /* Cursor */
-    const cursor = document.getElementById('cursor');
-    let mx = -100, my = -100, cx = -100, cy = -100;
-    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-    (function animateCursor() {
-      cx += (mx - cx) * 0.18;
-      cy += (my - cy) * 0.18;
-      cursor.style.left = cx + 'px';
-      cursor.style.top  = cy + 'px';
-      requestAnimationFrame(animateCursor);
-    })();
-    document.querySelectorAll('a, button').forEach(el => {
-      el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
-      el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+    /* ══════════════════════════════════════
+       UNIQUE CANVAS BACKGROUND (PARTICLE NETWORK)
+       ══════════════════════════════════════ */
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    let particles = [];
+    let numParticles = 100;
+    let connectionDistance = 160;
+    
+    let mouse = { x: -1000, y: -1000 };
+
+    function initCanvas() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+      
+      particles = [];
+      for(let i=0; i<numParticles; i++) {
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * 0.5,
+          vy: (Math.random() - 0.5) * 0.5,
+          color: Math.random() > 0.85 ? '#3df59a' : '#d4d2d2'
+        });
+      }
+    }
+
+    function drawNetwork() {
+      ctx.clearRect(0, 0, width, height);
+      
+      for(let i=0; i<particles.length; i++) {
+        let p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        
+        if(p.x < 0 || p.x > width) p.vx *= -1;
+        if(p.y < 0 || p.y > height) p.vy *= -1;
+        
+        let dxMouse = p.x - mouse.x;
+        let dyMouse = p.y - mouse.y;
+        let distMouse = Math.sqrt(dxMouse*dxMouse + dyMouse*dyMouse);
+        if (distMouse < 150) {
+          p.x += dxMouse * 0.02;
+          p.y += dyMouse * 0.02;
+        }
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.color === '#3df59a' ? 2 : 1.5, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+
+        for(let j=i+1; j<particles.length; j++) {
+          let p2 = particles[j];
+          let dx2 = p.x - p2.x;
+          let dy2 = p.y - p2.y;
+          let dist2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
+          
+          if (dist2 < connectionDistance) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p2.x, p2.y);
+            let opacity = 1 - (dist2 / connectionDistance);
+            ctx.strokeStyle = p.color === '#3df59a' || p2.color === '#3df59a' 
+              ? `rgba(61, 245, 154, ${opacity * 0.85})` 
+              : `rgba(212, 210, 210, ${opacity * 0.45})`;
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+          }
+        }
+      }
+      
+      requestAnimationFrame(drawNetwork);
+    }
+
+    initCanvas();
+    drawNetwork();
+    
+    window.addEventListener('resize', initCanvas);
+    document.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
     });
+    document.addEventListener('mouseleave', () => {
+      mouse.x = -1000;
+      mouse.y = -1000;
+    });
+
+    /* ══════════════════════════════════════
+       ENTRANCE ANIMATIONS
+       ══════════════════════════════════════ */
+    setTimeout(() => {
+      document.getElementById('heroBlock').classList.add('visible');
+      document.getElementById('infoBlock').classList.add('visible');
+      document.getElementById('formBlock').classList.add('visible');
+    }, 100);
+
 
     /* Handle form submission via AJAX to prevent redirect */
     const form = document.getElementById('contactForm');
