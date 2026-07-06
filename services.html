@@ -25,9 +25,11 @@
     #bg-canvas {
       position: fixed;
       inset: 0;
+      width: 100%;
+      height: 100vh;
       z-index: 0;
       pointer-events: none;
-      opacity: 0.4;
+      opacity: 0.7;
     }
     .page-wrap, nav, .site-footer {
       position: relative;
@@ -102,7 +104,8 @@
       .mobile-menu-toggle.active .bar:nth-child(2) { opacity: 0; }
       .mobile-menu-toggle.active .bar:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
       .nav-links {
-        display: none; flex-direction: column; width: 100%; margin-top: 16px; gap: 12px;
+        display: none; flex-direction: column; width: 200px;
+        position: absolute; top: 100%; right: 20px;
         background: var(--void); padding: 16px; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
         align-items: flex-start; text-align: left;
       }
@@ -201,6 +204,14 @@
       stroke-width: 8;
       stroke-linecap: round;
       /* Animation controlled by JS */
+    }
+
+    .anim-arrow {
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .anim-arrow.visible {
+      opacity: 1;
     }
 
     .step-point {
@@ -603,7 +614,7 @@
         <svg viewBox="0 0 800 1200" width="100%" height="100%">
           <defs>
             <marker id="arrowhead" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
-              <polygon points="0 0, 6 3, 0 6" fill="#3DF59A" />
+              <polygon points="0 0, 6 3, 0 6" fill="#3DF59A" class="anim-arrow" />
             </marker>
           </defs>
           <path class="road-path" d="M 400 100 C 750 100, 750 600, 400 600 C 50 600, 50 1100, 400 1100" />
@@ -616,7 +627,7 @@
         <svg viewBox="0 0 300 1100" width="100%" height="100%">
           <defs>
             <marker id="arrowhead-mobile" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
-              <polygon points="0 0, 6 3, 0 6" fill="#3DF59A" />
+              <polygon points="0 0, 6 3, 0 6" fill="#3DF59A" class="anim-arrow" />
             </marker>
           </defs>
           <path class="road-path" d="M 35 100 C 220 100, 220 550, 35 550 C 220 550, 220 1000, 35 1000" />
@@ -793,22 +804,31 @@
     let numParticles = 100;
     let connectionDistance = 160;
     
-    let mouse = { x: -1000, y: -1000 };
+    let mouse = { x: -1000, y: -1000, radius: 180 };
 
     function initCanvas() {
-      width = window.innerWidth;
-      height = window.innerHeight;
-      canvas.width = width;
-      canvas.height = height;
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
       
+      let speedMult = 1.5;
+      if (width < 768) {
+        numParticles = 75;
+        connectionDistance = 125;
+        speedMult = 0.8;
+      } else {
+        numParticles = 120;
+        connectionDistance = 160;
+      }
+
       particles = [];
-      for(let i=0; i<numParticles; i++) {
+      for (let i = 0; i < numParticles; i++) {
         particles.push({
           x: Math.random() * width,
           y: Math.random() * height,
-          vx: (Math.random() - 0.5) * 0.5,
-          vy: (Math.random() - 0.5) * 0.5,
-          color: Math.random() > 0.85 ? '#3df59a' : '#d4d2d2'
+          vx: (Math.random() - 0.5) * speedMult,
+          vy: (Math.random() - 0.5) * speedMult,
+          size: Math.random() * 2 + 0.5,
+          color: Math.random() > 0.8 ? '#3df59a' : '#d4d2d2'
         });
       }
     }
@@ -816,28 +836,29 @@
     function drawNetwork() {
       ctx.clearRect(0, 0, width, height);
       
-      for(let i=0; i<particles.length; i++) {
+      for (let i = 0; i < particles.length; i++) {
         let p = particles[i];
         p.x += p.vx;
         p.y += p.vy;
         
-        if(p.x < 0 || p.x > width) p.vx *= -1;
-        if(p.y < 0 || p.y > height) p.vy *= -1;
+        if (p.x < 0 || p.x > width) p.vx *= -1;
+        if (p.y < 0 || p.y > height) p.vy *= -1;
         
-        let dxMouse = p.x - mouse.x;
-        let dyMouse = p.y - mouse.y;
-        let distMouse = Math.sqrt(dxMouse*dxMouse + dyMouse*dyMouse);
-        if (distMouse < 150) {
-          p.x += dxMouse * 0.02;
-          p.y += dyMouse * 0.02;
+        let dx = p.x - mouse.x;
+        let dy = p.y - mouse.y;
+        let distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < mouse.radius) {
+          let force = (mouse.radius - distance) / mouse.radius;
+          p.x += (dx / distance) * force * 5;
+          p.y += (dy / distance) * force * 5;
         }
 
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.color === '#3df59a' ? 2 : 1.5, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fillStyle = p.color;
         ctx.fill();
-
-        for(let j=i+1; j<particles.length; j++) {
+        
+        for (let j = i + 1; j < particles.length; j++) {
           let p2 = particles[j];
           let dx2 = p.x - p2.x;
           let dy2 = p.y - p2.y;
@@ -924,6 +945,11 @@
         
         // Show step 3 after line travels down
         setTimeout(() => step3.classList.add('visible'), 1200);
+        
+        // Show arrowheads when the path animation finishes
+        setTimeout(() => {
+          document.querySelectorAll('.anim-arrow').forEach(el => el.classList.add('visible'));
+        }, 2000);
         
         observer2.disconnect();
       }
