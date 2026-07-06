@@ -109,7 +109,7 @@
         background: var(--void); padding: 16px; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
         align-items: flex-start; text-align: left;
       }
-      .nav-links.active { display: flex; }
+      .nav-links.active { display: flex !important; z-index: 300; }
       .nav-links a { font-size: 14px; }
       .desktop-cta { display: none !important; }
       .mobile-cta { display: inline-flex !important; justify-content: center; width: 100%; margin-top: 12px; padding: 12px; }
@@ -547,13 +547,13 @@
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
       
-      let speedMult = 1.5;
+      let speedMult = 1.0;
       if (width < 768) {
-        numParticles = 75;
+        numParticles = 50;
         connectionDistance = 125;
-        speedMult = 0.8;
+        speedMult = 0.5;
       } else {
-        numParticles = 120;
+        numParticles = 80;
         connectionDistance = 160;
       }
 

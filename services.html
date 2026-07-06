@@ -109,7 +109,7 @@
         background: var(--void); padding: 16px; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
         align-items: flex-start; text-align: left;
       }
-      .nav-links.active { display: flex; }
+      .nav-links.active { display: flex !important; z-index: 300; }
       .nav-links a { font-size: 14px; }
       .desktop-cta { display: none !important; }
       .mobile-cta { display: inline-flex !important; justify-content: center; width: 100%; margin-top: 12px; padding: 12px; }
@@ -615,7 +615,7 @@
           <path class="road-path" d="M 400 100 C 750 100, 750 600, 400 600 C 50 600, 50 1100, 400 1100" />
           <path class="animated-path" d="M 400 100 C 750 100, 750 600, 400 600 C 50 600, 50 1100, 400 1100" />
           <g class="traveling-arrow" style="opacity: 0; transform-origin: 0 0;">
-            <polygon points="-12 -7, 3 0, -12 7" fill="#3DF59A" />
+            <polygon points="-12 -7, 4 0, -12 7, -7 0" fill="#3DF59A" />
           </g>
         </svg>
       </div>
@@ -626,7 +626,7 @@
           <path class="road-path" d="M 35 100 C 220 100, 220 550, 35 550 C 220 550, 220 1000, 35 1000" />
           <path class="animated-path" d="M 35 100 C 220 100, 220 550, 35 550 C 220 550, 220 1000, 35 1000" />
           <g class="traveling-arrow" style="opacity: 0; transform-origin: 0 0;">
-            <polygon points="-12 -7, 3 0, -12 7" fill="#3DF59A" />
+            <polygon points="-12 -7, 4 0, -12 7, -7 0" fill="#3DF59A" />
           </g>
         </svg>
       </div>
@@ -806,13 +806,13 @@
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
       
-      let speedMult = 1.5;
+      let speedMult = 1.0;
       if (width < 768) {
-        numParticles = 75;
+        numParticles = 50;
         connectionDistance = 125;
-        speedMult = 0.8;
+        speedMult = 0.5;
       } else {
-        numParticles = 120;
+        numParticles = 80;
         connectionDistance = 160;
       }
 
@@ -913,7 +913,7 @@
         const eased = easeInOut(progress);
         
         const currentLength = startLen + (endLen - startLen) * eased;
-        path.style.strokeDashoffset = totalLength - currentLength;
+        path.style.strokeDashoffset = (totalLength - currentLength) + 'px';
         
         if (arrow) {
           const pt = path.getPointAtLength(currentLength);
@@ -932,8 +932,8 @@
     animatedPaths.forEach(path => {
       const length = path.getTotalLength();
       path.style.transition = 'none'; // we handle animation via JS now
-      path.style.strokeDasharray = length;
-      path.style.strokeDashoffset = length;
+      path.style.strokeDasharray = length + 'px';
+      path.style.strokeDashoffset = length + 'px';
       path.dataset.totalLength = length;
       
       // Position arrow at start
