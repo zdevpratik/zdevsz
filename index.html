@@ -1134,23 +1134,29 @@
 
 
 
-    document.querySelectorAll('.nav-links a').forEach(link => {
-      const original = link.getAttribute('data-original');
-
-      /* Smooth scroll using modern scrollIntoView */
+    document.body.addEventListener('click', e => {
+      const link = e.target.closest('a[data-scroll]');
+      if (!link) return;
+      
       const target = link.getAttribute('data-scroll');
       if (target) {
-        link.addEventListener('click', e => {
-          e.preventDefault();
-          if (target === 'top') {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          } else {
-            const el = document.getElementById(target);
-            if (el) {
-              el.scrollIntoView({ behavior: 'smooth' });
-            }
+        e.preventDefault();
+        if (target === 'top') {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          const el = document.getElementById(target);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth' });
           }
-        });
+        }
+        
+        // Close mobile menu if it's open
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        if (mobileMenuToggle && mobileMenuToggle.classList.contains('active')) {
+          mobileMenuToggle.classList.remove('active');
+          const overlay = document.querySelector('.mobile-menu-overlay');
+          if (overlay) overlay.classList.remove('active');
+        }
       }
     });
 
