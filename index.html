@@ -1018,13 +1018,13 @@
       height = canvas.height = window.innerHeight;
       
       // Balance chaos and coverage on mobile screens
-      let speedMult = 1.2; // Decreased animation on PC
+      let speedMult = 2.0;
       if (width < 768) {
         numParticles = 180;
         connectionDistance = 145;
         speedMult = 1.8; // Maintained high intensity for mobile as requested
       } else {
-        numParticles = 80; // Decreased density on PC
+        numParticles = 140; // Restored original density on PC
         connectionDistance = 160;
       }
 
