@@ -109,7 +109,16 @@
         background: var(--void); padding: 16px; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
         align-items: flex-start; text-align: left;
       }
-      .nav-links.active { display: flex !important; z-index: 9999 !important; opacity: 1 !important; visibility: visible !important; }
+      .nav-links.active { 
+        display: flex !important; 
+        position: fixed !important; 
+        top: 64px !important; 
+        right: 20px !important; 
+        z-index: 999999 !important; 
+        opacity: 1 !important; 
+        visibility: visible !important; 
+        background: #080808 !important;
+      }
       .nav-links a { font-size: 14px; }
       .desktop-cta { display: none !important; }
       .mobile-cta { display: inline-flex !important; justify-content: center; width: 100%; margin-top: 12px; padding: 12px; }
@@ -519,7 +528,9 @@
     const mobileMenuToggle = document.getElementById('mobileMenuToggle');
     const navLinks = document.getElementById('navLinks');
     if (mobileMenuToggle && navLinks) {
-      mobileMenuToggle.addEventListener('click', () => {
+      mobileMenuToggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         mobileMenuToggle.classList.toggle('active');
         navLinks.classList.toggle('active');
       });
