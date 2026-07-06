@@ -851,11 +851,11 @@
     @media (max-width: 900px) {
       .floating-nav-wrapper {
         position: fixed;
-        top: 24px;
-        right: 20px;
+        bottom: 32px;
+        right: 24px;
         z-index: 999999;
         display: flex;
-        flex-direction: column-reverse;
+        flex-direction: column;
         align-items: flex-end;
         gap: 16px;
       }
@@ -871,9 +871,9 @@
         gap: 20px;
         opacity: 0;
         pointer-events: none;
-        transform: translateY(-20px) scale(0.95);
+        transform: translateY(20px) scale(0.95);
         transition: all 0.4s var(--ease-expo);
-        transform-origin: top right;
+        transform-origin: bottom right;
         box-shadow: 0 10px 40px rgba(0,0,0,0.5);
       }
       .floating-nav-menu.active {
@@ -898,8 +898,8 @@
       }
       .floating-nav-btn {
         background: #3df59a;
-        width: 48px;
-        height: 48px;
+        width: 44px;
+        height: 44px;
         border-radius: 50%;
         border: none;
         display: flex;
@@ -917,7 +917,7 @@
         background: #2ce088;
       }
       .floating-nav-btn .f-bar {
-        width: 20px;
+        width: 18px;
         height: 2px;
         background: #080808;
         border-radius: 2px;
