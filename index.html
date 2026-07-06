@@ -132,7 +132,6 @@
     .nav-links a:hover { color: var(--bone); }
     .mobile-menu-toggle { display: none; } 
     .mobile-cta { display: none !important; }
-    .mobile-menu-overlay { display: none; }
 
     /* Discovery Call button */
     .nav-cta {
@@ -350,7 +349,7 @@
       .nav-cta .cta-label { font-size: 9px; }
       .nav-logo-img { height: 40px; }
       .mobile-menu-toggle {
-        display: flex !important; flex-direction: column; gap: 4px;
+        display: flex; flex-direction: column; gap: 4px;
         background: none; border: none; cursor: pointer; padding: 4px;
         position: relative; z-index: 200;
       }
@@ -360,21 +359,13 @@
       .mobile-menu-toggle.active .bar:nth-child(1) { transform: translateY(6px) rotate(45deg); }
       .mobile-menu-toggle.active .bar:nth-child(2) { opacity: 0; }
       .mobile-menu-toggle.active .bar:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
-      .nav-links { display: none !important; }
-      .mobile-menu-overlay {
-        display: none; flex-direction: column; width: 100%;
-        position: fixed; top: 64px; left: 0; right: 0; bottom: 0;
-        background: rgba(8,8,8,0.98); padding: 40px 20px;
-        align-items: center; text-align: center; justify-content: flex-start; gap: 32px;
-        z-index: 9999999; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      .nav-links {
+        display: none; flex-direction: column; width: 100%; margin-top: 16px; gap: 12px;
+        background: var(--void); padding: 16px; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
+        align-items: flex-start; text-align: left;
       }
-      .mobile-menu-overlay.active { display: flex !important; }
-      .mobile-menu-overlay a {
-        font-family: var(--font); font-weight: 400; font-size: 24px !important;
-        letter-spacing: .08em; text-transform: uppercase; color: var(--ash);
-        text-decoration: none; transition: color .2s ease;
-      }
-      .mobile-menu-overlay a:hover { color: var(--bone); }
+      .nav-links.active { display: flex; }
+      .nav-links a { font-size: 14px; }
       .desktop-cta { display: none !important; }
       .mobile-cta { display: inline-flex !important; justify-content: center; width: 100%; margin-top: 12px; padding: 12px; }
       .nav-cta .cta-label { font-size: 9px; }
@@ -1158,8 +1149,8 @@
         const mobileMenuToggle = document.getElementById('mobileMenuToggle');
         if (mobileMenuToggle && mobileMenuToggle.classList.contains('active')) {
           mobileMenuToggle.classList.remove('active');
-          const overlay = document.querySelector('.mobile-menu-overlay');
-          if (overlay) overlay.classList.remove('active');
+          const nl = document.getElementById('navLinks');
+          if (nl) nl.classList.remove('active');
         }
       }
     });
@@ -1251,21 +1242,14 @@
     const mobileMenuToggle = document.getElementById('mobileMenuToggle');
     const navLinks = document.getElementById('navLinks');
     if (mobileMenuToggle && navLinks) {
-      const overlay = document.createElement('div');
-      overlay.className = 'mobile-menu-overlay';
-      overlay.innerHTML = navLinks.innerHTML;
-      document.body.appendChild(overlay);
-      
-      mobileMenuToggle.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
+      mobileMenuToggle.addEventListener('click', () => {
         mobileMenuToggle.classList.toggle('active');
-        overlay.classList.toggle('active');
+        navLinks.classList.toggle('active');
       });
-      overlay.querySelectorAll('a').forEach(link => {
+      navLinks.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', () => {
           mobileMenuToggle.classList.remove('active');
-          overlay.classList.remove('active');
+          navLinks.classList.remove('active');
         });
       });
     }

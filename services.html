@@ -87,7 +87,6 @@
     .nav-cta:hover { border-color: var(--bone); }
     .mobile-menu-toggle { display: none; }
     .mobile-cta { display: none !important; }
-    .mobile-menu-overlay { display: none; }
 
     @media (max-width: 900px) {
       body { touch-action: pan-y; overflow-x: clip; }
@@ -786,21 +785,14 @@
     const mobileMenuToggle = document.getElementById('mobileMenuToggle');
     const navLinks = document.getElementById('navLinks');
     if (mobileMenuToggle && navLinks) {
-      const overlay = document.createElement('div');
-      overlay.className = 'mobile-menu-overlay';
-      overlay.innerHTML = navLinks.innerHTML;
-      document.body.appendChild(overlay);
-      
-      mobileMenuToggle.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
+      mobileMenuToggle.addEventListener('click', () => {
         mobileMenuToggle.classList.toggle('active');
-        overlay.classList.toggle('active');
+        navLinks.classList.toggle('active');
       });
-      overlay.querySelectorAll('a').forEach(link => {
+      navLinks.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', () => {
           mobileMenuToggle.classList.remove('active');
-          overlay.classList.remove('active');
+          navLinks.classList.remove('active');
         });
       });
     }
