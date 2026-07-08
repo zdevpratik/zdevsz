@@ -856,6 +856,7 @@
         form.reset(); // Empty the form
         form.style.display = 'none'; // Hide the form
         document.getElementById('formSuccess').classList.add('show'); // Show thank you message
+        window.history.pushState({}, '', '?sent=1'); // Change URL without reloading
       })
       .catch(error => {
         console.error(error);
