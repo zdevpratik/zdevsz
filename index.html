@@ -127,17 +127,16 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
        ──────────────────────────────────────── */
     nav {
       position: fixed;
-      inset: 0 0 auto 0;
+      top: 0; left: 0; right: 0;
       z-index: 999;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 22px 48px;
       background: transparent;
-      transition: background .4s ease, border-color .4s ease;
+      transition: background .4s ease;
     }
 
-    /* Logo */
     .nav-logo { display: flex; align-items: center; }
     .nav-logo-img {
       height: 50px;
@@ -147,8 +146,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     }
     .nav-logo:hover .nav-logo-img { opacity: 0.85; }
 
-    /* Links */
-    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
 
     .nav-links a {
       font-weight: 400; font-size: 10px;
@@ -156,12 +154,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       color: var(--ash);
       display: inline-block; min-width: 2ch;
       transition: color .2s ease;
+      text-decoration: none;
     }
     .nav-links a:hover { color: var(--bone); }
-     
+
     .mobile-cta { display: none !important; }
 
-    /* Discovery Call button */
     .nav-cta {
       display: inline-flex; align-items: center; gap: 8px;
       padding: 9px 20px;
@@ -169,31 +167,48 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       font-weight: 400; font-size: 10px;
       letter-spacing: .08em; text-transform: uppercase;
       color: var(--bone);
-      position: relative; overflow: hidden;
-      transition: border-color .3s ease, transform .4s var(--ease-expo);
+      text-decoration: none;
+      transition: border-color .3s ease;
     }
-    .nav-cta::before {
-      content: ''; position: absolute; inset: 0;
-      background: rgba(252,252,252,.04); opacity: 0;
-      transition: opacity .3s ease;
-    }
-    .nav-cta:hover { border-color: var(--bone); transform: scale(1.06) translateY(-2px); }
-    .nav-cta:hover::before { opacity: 1; }
+    .nav-cta:hover { border-color: var(--bone); }
 
-    .nav-cta .cta-label {
-      display: inline-block;
-      transition: transform .35s var(--ease-expo);
+    .menu-btn {
+      display: none;
+      align-items: center; gap: 6px;
+      background: none;
+      border: 1px solid rgba(212,210,210,.5); border-radius: 8px;
+      cursor: pointer; padding: 9px 16px;
+      color: var(--bone); font-family: var(--font);
+      font-size: 10px; font-weight: 400; letter-spacing: .08em; text-transform: uppercase;
+      transition: border-color .3s ease;
     }
-    .nav-cta:hover .cta-label { transform: translateY(-3px); }
+    .menu-btn:hover { border-color: var(--bone); }
+    .menu-btn-arrow { transition: transform .3s ease; font-size: 12px; }
+    .menu-btn.active .menu-btn-arrow { transform: rotate(180deg); }
 
-    .nav-cta .cta-arrow {
-      display: inline-block; font-size: 13px; line-height: 1;
-      transition: transform .35s var(--ease-expo);
+    @media (max-width: 900px) {
+      nav { padding: 12px 20px; }
+      .nav-logo-img { height: 36px; }
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%; left: 0; right: 0;
+        flex-direction: column;
+        padding: 20px;
+        gap: 16px;
+        background: var(--void);
+        border-top: 1px solid rgba(255,255,255,0.06);
+      }
+      .nav-links.active { display: flex; }
+      .nav-links a { font-size: 14px; width: 100%; }
+      .nav-cta.desktop-cta { display: none !important; }
+      .nav-cta.mobile-cta {
+        display: inline-flex !important;
+        width: 100%; justify-content: center;
+        padding: 12px 20px; margin-top: 4px;
+      }
+      .menu-btn { display: inline-flex; }
     }
-    .nav-cta:hover .cta-arrow { transform: translate(5px,-5px); }
-
-    /* ── Mobile Menu Toggle (hidden on desktop) ── */
-    .mobile-menu-toggle { display: none; }
 
     /* ────────────────────────────────────────
        HERO
@@ -373,35 +388,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       /* Ensure every sticky frame fills the full visual width */
       .we-sticky,
       .manifesto-sticky { width: 100vw; max-width: 100vw; }
-
-      /* ── Nav ── */
-      nav { padding: 12px 20px; flex-wrap: wrap; }
-      .nav-logo { flex: none; }
-      .nav-logo-img { height: 40px; }
-      .mobile-menu-toggle {
-        display: inline-flex; align-items: center; gap: 6px;
-        background: none; border: 1px solid rgba(212,210,210,.5); border-radius: 8px;
-        cursor: pointer; padding: 9px 16px;
-        color: var(--bone); font-family: var(--font);
-        font-size: 10px; font-weight: 400; letter-spacing: .08em; text-transform: uppercase;
-        position: relative; z-index: 200;
-        order: 2;
-        transition: border-color .3s ease;
-      }
-      .mobile-menu-toggle:hover { border-color: var(--bone); }
-      .toggle-icon { transition: transform .3s ease; font-size: 12px; }
-      .mobile-menu-toggle.active .toggle-icon { transform: rotate(180deg); }
-      
-      .nav-links {
-        display: none; flex-direction: column; width: 100%; margin-top: 16px; gap: 12px;
-        background: var(--void); padding: 16px; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
-        align-items: flex-start; text-align: left; order: 3;
-      }
-      .nav-links.active { display: flex; }
-      .nav-links a { font-size: 14px; }
-      .desktop-cta { display: none !important; }
-      .nav-cta.mobile-cta { display: inline-flex !important; justify-content: center; width: 100%; margin-top: 12px; padding: 12px; }
-      .nav-cta.desktop-cta { display: none !important; }
 
       /* ── Hero ── */
       .hero { min-height: 100svh; }
@@ -887,18 +873,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <img src="logo with bg.png" alt="zdevs" class="nav-logo-img">
     </a>
 
-    <!-- Mobile Menu Toggle -->
-    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
-      <span class="toggle-label">MENU</span>
-      <span class="toggle-icon">▾</span>
-    </button>
-
     <ul class="nav-links" id="navLinks">
-      <li><a href="#" data-original="HOME" data-scroll="top">HOME</a></li>
-      <li><a href="#" data-original="WHO ARE WE" data-scroll="we-are">WHO ARE WE</a></li>
-      <li><a href="services.html" data-original="SERVICES">SERVICES</a></li>
-      <li><a href="pricing.html" data-original="PRICING">PRICING</a></li>
-      <li><a href="contact.html" data-original="CONTACT">CONTACT</a></li>
+      <li><a href="#" data-scroll="top">HOME</a></li>
+      <li><a href="#" data-scroll="we-are">WHO ARE WE</a></li>
+      <li><a href="services.html">SERVICES</a></li>
+      <li><a href="pricing.html">PRICING</a></li>
+      <li><a href="contact.html">CONTACT</a></li>
       <li><a href="contact.html" class="nav-cta mobile-cta"><span class="cta-label">BOOK AN INQUIRY</span><span class="cta-arrow">↗</span></a></li>
     </ul>
 
@@ -906,6 +886,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <span class="cta-label">BOOK AN INQUIRY</span>
       <span class="cta-arrow">↗</span>
     </a>
+
+    <button class="menu-btn" id="mobileMenuToggle" aria-label="Toggle menu">
+      <span class="menu-btn-text">MENU</span>
+      <span class="menu-btn-arrow">▾</span>
+    </button>
   </nav>
 
   <!-- ─────────────────────────────────
