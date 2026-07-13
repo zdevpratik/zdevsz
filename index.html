@@ -193,7 +193,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .nav-cta:hover .cta-arrow { transform: translate(5px,-5px); }
 
     /* ── Mobile Menu Toggle (hidden on desktop) ── */
-    .mobile-menu-toggle { display: none !important; }
+    .mobile-menu-toggle { display: none; }
 
     /* ────────────────────────────────────────
        HERO
@@ -379,9 +379,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       .nav-logo { flex: none; }
       .nav-logo-img { height: 40px; }
       .mobile-menu-toggle {
-        display: flex !important; flex-direction: column; gap: 4px;
+        display: flex; flex-direction: column; gap: 4px;
         background: none; border: none; cursor: pointer; padding: 8px;
-        position: relative; z-index: 9999;
+        position: relative; z-index: 200;
         order: 2;
       }
       .mobile-menu-toggle .bar { width: 22px; height: 2px; background: var(--bone); transition: 0.3s; border-radius: 2px; }
@@ -390,11 +390,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       .mobile-menu-toggle.active .bar:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
       
       .nav-links {
-        display: none !important; flex-direction: column; width: 100%; margin-top: 16px; gap: 12px;
+        display: none; flex-direction: column; width: 100%; margin-top: 16px; gap: 12px;
         background: var(--void); padding: 16px; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
         align-items: flex-start; text-align: left; order: 3;
       }
-      .nav-links.active { display: flex !important; }
+      .nav-links.active { display: flex; }
       .nav-links a { font-size: 14px; }
       .desktop-cta { display: none !important; }
       .nav-cta.mobile-cta { display: inline-flex !important; justify-content: center; width: 100%; margin-top: 12px; padding: 12px; }
